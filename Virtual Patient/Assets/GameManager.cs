@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour {
     float hunger, hungerMax = 30, hungerChange = 0.2f, full, tooFull; //Hunger
     float thirst, thirstMax = 30, thirstChange = 0.5f; //Thirst
     float bladder, bladderMax = 30, bladderChange = 0.3f; //Bladder
-    float hygiene, hygieneMax = 30, hygieneChange = 0.1f; //Hygiene
+    float hygiene = 30, hygieneMax = 30, hygieneChange = 0.1f; //Hygiene
     float pain, painMax = 30, painChange = 0.2f; //Pain
     float over, overMax = 30, overChange = 0.1f; //Overdose
     float tire, tireMax = 30, awakeChange = 0.05f, sleepChange = 0.5f; //Tiredness
@@ -227,6 +227,10 @@ public class GameManager : MonoBehaviour {
     public void ShiftPosition()
     {
         sore -= soreShift;
+        if(sore < 0)
+        {
+            sore = 0;
+        }
     }
     public void Massage()//resets Bedsores
     {
@@ -250,6 +254,67 @@ public class GameManager : MonoBehaviour {
     public bool IfAwake()
     {
         return awake;
+    }
+    public float GetHunger()
+    {
+        return hunger;
+    }
+    public float GetFull()
+    {
+        return full;
+    }
+    public float GetTooFull()
+    {
+        return tooFull;
+    }
+    public float GetThirst()
+    {
+        return thirst;
+    }
+    public float GetIV()
+    {
+        return iv;
+    }
+    public float GetBladder()
+    {
+        return bladder;
+    }
+    public float GetBedpan()
+    {
+        return bedpan;
+    }
+    public float GetHygiene()
+    {
+        return hygiene;
+    }
+    public float GetPain()
+    {
+        return pain;
+    }
+    public float GetOver()
+    {
+        return over;
+    }
+    public float GetTire()
+    {
+        return tire;
+    }
+    public float GetSore()
+    {
+        return sore;
+    }
+    public float GetHealth()
+    {
+        return health;
+    }
+    public float GetHappiness()
+    {
+        return happiness;
+    }
+    //Return Lesser Variables
+    public float Resistance()
+    {
+        return fortify;
     }
 
 

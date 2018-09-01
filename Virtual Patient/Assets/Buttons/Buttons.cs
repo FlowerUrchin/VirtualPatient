@@ -15,7 +15,11 @@ public class Buttons : MonoBehaviour {
 	void Update () {
 		
 	}
-
+    public void GiveFood()
+    {
+        GameManager.instance.Feed(10, 0.1f);
+        //Work in Fullness, Fitness
+    }
     public void GiveDrink()
     {
         GameManager.instance.Drink(10);
@@ -42,15 +46,15 @@ public class Buttons : MonoBehaviour {
     }
     public void Shower()
     {
-        GameManager.instance.Clean(X);
+        GameManager.instance.Clean(30); //Should be max clean
     }
     public void Bedbath()
     {
-        GameManager.instance.Clean(X);
+        GameManager.instance.Clean(15);
     }
     public void WashHands()
     {
-        GameManager.instance.Clean(X);
+        GameManager.instance.Clean(5);
     }
     public void GivePainkiller()
     {
