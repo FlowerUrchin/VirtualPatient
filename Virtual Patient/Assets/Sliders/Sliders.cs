@@ -42,5 +42,9 @@ public class Sliders : MonoBehaviour {
         {
             slider.value = GameManager.instance.GetHygiene();
         }
+        else if(role == "Sleep Slider")
+        {
+            slider.value = GameManager.instance.GetTire();
+        }
 	}
 }

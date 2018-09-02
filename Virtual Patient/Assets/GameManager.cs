@@ -1,10 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
+    #region setup
+
     public static GameManager instance = null;
+
+    //Objects
+    public Text diagnoseResults;
 
     //Game Variables
     float hunger, hungerMax = 30, hungerChange = 0.2f, full, tooFull; //Hunger
@@ -37,9 +43,13 @@ public class GameManager : MonoBehaviour {
     {
 		
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    #endregion
+
+    #region Time and Variable Change
+
+    // Update is called once per frame
+    void Update ()
     {
         tHunger = hunger;
         tThirst = thirst;
@@ -167,6 +177,10 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    #endregion
+
+    #region Methods for Influencing Stats
+
     //Action Methods for restoring values
     public void Feed(float food, float resist)//lowers the Hunger Variable
     {
@@ -250,6 +264,10 @@ public class GameManager : MonoBehaviour {
         bedpanUse = !bedpanUse;
     }
 
+    #endregion
+
+    #region Getting Stat Values
+
     //Get values
     public bool IfAwake()
     {
@@ -316,6 +334,33 @@ public class GameManager : MonoBehaviour {
     {
         return fortify;
     }
+
+    #endregion
+
+    #region Diagnosing
+
+    //Diagnosing Results Method
+    public void Diagnosed(int order)
+    {
+        if(order == 1)//Bedsores
+        {
+            diagnoseResults.text = "Bedsores at " + (int)sore + " out of " + soreMax;
+        }
+        if(order == 2)//Pain
+        {
+            diagnoseResults.text = "Pain at " + (int)pain + " out of " + painMax;
+        }
+        if (order == 3)//Overdose
+        {
+            diagnoseResults.text = "Drug Overdose at " + (int)over + " out of " + overMax;
+        }
+        if (order == 4)//Resistance
+        {
+            diagnoseResults.text = "Overdose Resistance at " + (int)fortify;
+        }
+    }
+
+    #endregion
 
 
     //Gamemanager Bit

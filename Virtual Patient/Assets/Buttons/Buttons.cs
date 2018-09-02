@@ -4,25 +4,33 @@ using UnityEngine;
 
 public class Buttons : MonoBehaviour {
 
-    float X;
+    bool awake;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
 		
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update ()
+    {
+        awake = GameManager.instance.IfAwake();
 	}
     public void GiveFood()
     {
-        GameManager.instance.Feed(10, 0.1f);
-        //Work in Fullness, Fitness
+        if (awake)
+        {
+            GameManager.instance.Feed(10, 0.1f);
+            //Work in Fullness, Fitness
+        }
     }
     public void GiveDrink()
     {
-        GameManager.instance.Drink(10);
+        if (awake)
+        {
+            GameManager.instance.Drink(10);
+        }
     }
     public void ToggleIV()
     {
@@ -34,7 +42,10 @@ public class Buttons : MonoBehaviour {
     }
     public void UseToilet()
     {
-        GameManager.instance.Toilet();
+        if (awake)
+        {
+            GameManager.instance.Toilet();
+        }
     }
     public void ToggleBedpan()
     {
@@ -46,19 +57,32 @@ public class Buttons : MonoBehaviour {
     }
     public void Shower()
     {
-        GameManager.instance.Clean(30); //Should be max clean
+        if (awake)
+        {
+            GameManager.instance.Clean(30); //Should be max clean
+        }
     }
     public void Bedbath()
     {
-        GameManager.instance.Clean(15);
+        if (awake)
+        {
+            GameManager.instance.Clean(15);
+        }
     }
     public void WashHands()
     {
-        GameManager.instance.Clean(5);
+        if (awake)
+        {
+            GameManager.instance.Clean(5);
+        }
     }
     public void GivePainkiller()
     {
-        //Get Strength and stuff from  Painkiller item
+        if (awake)
+        {
+            //Get Strength and stuff from  Painkiller item
+            GameManager.instance.Painkiller(10, 1);
+        }
     }
     public void ShiftPatient()
     {
@@ -66,7 +90,10 @@ public class Buttons : MonoBehaviour {
     }
     public void MassagePatient()
     {
-        GameManager.instance.Massage();
+        if (awake)
+        {
+            GameManager.instance.Massage();
+        }
     }
     public void SleepingState()
     {
