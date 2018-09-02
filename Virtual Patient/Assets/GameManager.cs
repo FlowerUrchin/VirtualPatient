@@ -31,7 +31,7 @@ public class GameManager : MonoBehaviour {
     float iv = 10, ivMax = 10; //IV Drip
     public bool ivUse = false;
     //Other Variables
-    float fortify, fortifyChange = 0.1f; //Resistance to Overdose
+    float fortify, fortifyChange = 0.05f; //Resistance to Overdose
     //NonGame Variables
     float timeCheck = 0, timeWait = 1;
 
@@ -40,6 +40,10 @@ public class GameManager : MonoBehaviour {
 
     //Source Buttons
     public Button[] sourceButton = new Button[6];
+
+    //Togles IV Slider
+    bool IVActive = false, BedpanActive = false;
+    public GameObject IVSlider, BPSlider;
 
 	// Use this for initialization
 	void Start ()
@@ -96,6 +100,7 @@ public class GameManager : MonoBehaviour {
         if(ivUse && iv != 0)
         {
             iv -= thirstChange;
+            thirst -= 0.1f;
             if(iv < 0)
             {
                 iv = 0;
@@ -113,6 +118,7 @@ public class GameManager : MonoBehaviour {
         if (bedpanUse && bedpan != bedpanMax)
         {
             bedpan += bladderChange;
+            bladder -= bladderChange;
             if(bedpan > bedpanMax)
             {
                 bedpan = bedpanMax;
@@ -261,10 +267,15 @@ public class GameManager : MonoBehaviour {
     public void IVToggle()
     {
         ivUse = !ivUse;
+        IVActive = !IVActive;
+        IVSlider.SetActive(IVActive);
     }
     public void BedpanToggle()
     {
         bedpanUse = !bedpanUse;
+
+        BedpanActive = !BedpanActive;
+        BPSlider.SetActive(BedpanActive);
     }
 
     #endregion

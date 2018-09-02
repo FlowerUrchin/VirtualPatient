@@ -21,8 +21,9 @@ public class Buttons : MonoBehaviour {
     {
         if (awake)
         {
-            GameManager.instance.Feed(10, 0.1f);
+            GameManager.instance.Feed(10, 1);
             //Work in Fullness, Fitness
+            GameManager.instance.Canceller(10);//closes all buttons
         }
     }
     public void GiveDrink()
@@ -30,36 +31,44 @@ public class Buttons : MonoBehaviour {
         if (awake)
         {
             GameManager.instance.Drink(10);
+            GameManager.instance.Canceller(10);//closes all buttons
         }
     }
     public void ToggleIV()
     {
         GameManager.instance.IVToggle();
+        GameManager.instance.Canceller(10);//closes all buttons
+
     }
     public void FillIV()
     {
         GameManager.instance.RefillIV();
+        GameManager.instance.Canceller(10);//closes all buttons
     }
     public void UseToilet()
     {
         if (awake)
         {
             GameManager.instance.Toilet();
+            GameManager.instance.Canceller(10);//closes all buttons
         }
     }
     public void ToggleBedpan()
     {
         GameManager.instance.BedpanToggle();
+        GameManager.instance.Canceller(10);//closes all buttons
     }
     public void EmptyBedpan()
     {
         GameManager.instance.EmptyBP();
+        GameManager.instance.Canceller(10);//closes all buttons
     }
     public void Shower()
     {
         if (awake)
         {
             GameManager.instance.Clean(30); //Should be max clean
+            GameManager.instance.Canceller(10);//closes all buttons
         }
     }
     public void Bedbath()
@@ -67,6 +76,7 @@ public class Buttons : MonoBehaviour {
         if (awake)
         {
             GameManager.instance.Clean(15);
+            GameManager.instance.Canceller(10);//closes all buttons
         }
     }
     public void WashHands()
@@ -74,6 +84,7 @@ public class Buttons : MonoBehaviour {
         if (awake)
         {
             GameManager.instance.Clean(5);
+            GameManager.instance.Canceller(10);//closes all buttons
         }
     }
     public void GivePainkiller()
@@ -82,21 +93,25 @@ public class Buttons : MonoBehaviour {
         {
             //Get Strength and stuff from  Painkiller item
             GameManager.instance.Painkiller(10, 1);
+            GameManager.instance.Canceller(10);//closes all buttons
         }
     }
     public void ShiftPatient()
     {
         GameManager.instance.ShiftPosition();
+        GameManager.instance.Canceller(10);//closes all buttons
     }
     public void MassagePatient()
     {
         if (awake)
         {
             GameManager.instance.Massage();
+            GameManager.instance.Canceller(10);//closes all buttons
         }
     }
     public void SleepingState()
     {
         GameManager.instance.SleepState();
+        GameManager.instance.Canceller(10);//closes all buttons
     }
 }

@@ -16,17 +16,21 @@ public class DiagnosingButtons : MonoBehaviour {
     public void DiagSores()//Bedsores
     {
         GameManager.instance.Diagnosed(1);
+        GameManager.instance.Canceller(10);//closes all buttons
     }
     public void DiagPain()
     {
         GameManager.instance.Diagnosed(2);
+        GameManager.instance.Canceller(10);//closes all buttons
     }
     public void DiagOver()
     {
         GameManager.instance.Diagnosed(3);
+        GameManager.instance.Canceller(10);//closes all buttons
     }
     public void DiagFort()
     {
         GameManager.instance.Diagnosed(4);
+        GameManager.instance.Canceller(10);//closes all buttons
     }
 }
