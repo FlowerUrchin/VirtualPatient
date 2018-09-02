@@ -38,6 +38,9 @@ public class GameManager : MonoBehaviour {
     //Test Variables
     public float tHunger, tThirst, tBladder, tHygiene, tPain, tOver, tTire, tSore, tIV, tBP;
 
+    //Source Buttons
+    public Button[] sourceButton = new Button[6];
+
 	// Use this for initialization
 	void Start ()
     {
@@ -362,6 +365,41 @@ public class GameManager : MonoBehaviour {
 
     #endregion
 
+    #region Cancel Call
+    public void Canceller(int button) //Closes all other buttons
+    {
+        for(int i = 0; i < sourceButton.Length; i++)
+        {
+            if(i != button)
+            {
+                if(sourceButton[i].name == "Button_Sink")
+                {
+                    sourceButton[i].GetComponent<SinkScript>().Cancel();
+                }
+                if (sourceButton[i].name == "Button_Diagnose")
+                {
+                    sourceButton[i].GetComponent<DiagnoseButton>().Cancel();
+                }
+                if (sourceButton[i].name == "Button_Bed")
+                {
+                    sourceButton[i].GetComponent<BedButton>().Cancel();
+                }
+                if (sourceButton[i].name == "TrayButton")
+                {
+                    sourceButton[i].GetComponent<TrayButton>().Cancel();
+                }
+                if (sourceButton[i].name == "IVButton")
+                {
+                    sourceButton[i].GetComponent<IVButton>().Cancel();
+                }
+                if (sourceButton[i].name == "DoorButton")
+                {
+                    sourceButton[i].GetComponent<DoorButton>().Cancel();
+                }
+            }
+        }
+    }
+    #endregion
 
     //Gamemanager Bit
     void Awake()

@@ -25,6 +25,7 @@ public class SinkScript : MonoBehaviour {
         {
             GDrink.SetActive(true);
             WHands.SetActive(true);
+            GameManager.instance.Canceller(0);
         }
         else
         {

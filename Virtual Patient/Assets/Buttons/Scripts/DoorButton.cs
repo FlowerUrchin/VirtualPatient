@@ -23,6 +23,7 @@ public class DoorButton : MonoBehaviour {
         {
             shower.SetActive(true);
             toilet.SetActive(true);
+            GameManager.instance.Canceller(5);
         }
         else
         {

@@ -27,6 +27,7 @@ public class DiagnoseButton : MonoBehaviour {
             overDia.SetActive(true);
             fortDia.SetActive(true);
             explaina.SetActive(true);
+            GameManager.instance.Canceller(1);
         }
         else
         {
@@ -38,7 +39,7 @@ public class DiagnoseButton : MonoBehaviour {
         }
         on = !on;
     }
-    public void Close()
+    public void Cancel()
     {
         soreDia.SetActive(false);
         painDia.SetActive(false);

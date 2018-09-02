@@ -23,6 +23,7 @@ public class TrayButton : MonoBehaviour {
         {
             food.SetActive(true);
             painkiller.SetActive(true);
+            GameManager.instance.Canceller(3);
         }
         else
         {

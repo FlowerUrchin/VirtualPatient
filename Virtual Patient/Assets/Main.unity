@@ -2056,7 +2056,7 @@ GameObject:
   - component: {fileID: 890139742}
   - component: {fileID: 890139741}
   m_Layer: 0
-  m_Name: Button_Diagnose 1
+  m_Name: Button_Diagnose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4199,6 +4199,13 @@ MonoBehaviour:
   tSore: 0
   tIV: 0
   tBP: 0
+  sourceButton:
+  - {fileID: 1225693154}
+  - {fileID: 890139741}
+  - {fileID: 850548595}
+  - {fileID: 2046435416}
+  - {fileID: 1831178930}
+  - {fileID: 612340368}
 --- !u!4 &1939352251
 Transform:
   m_ObjectHideFlags: 0

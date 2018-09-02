@@ -23,6 +23,7 @@ public class IVButton : MonoBehaviour {
         {
             ivToggle.SetActive(true);
             ivRefill.SetActive(true);
+            GameManager.instance.Canceller(4);
         }
         else
         {

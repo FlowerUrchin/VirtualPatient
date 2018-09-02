@@ -25,6 +25,7 @@ public class BedButton : MonoBehaviour {
             bedpanToggle.SetActive(true);
             bedpanClean.SetActive(true);
             bedBath.SetActive(true);
+            GameManager.instance.Canceller(2);
         }
         else
         {
