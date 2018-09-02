@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DiagnoseButton : MonoBehaviour {
 
-    public GameObject soreDia, painDia, overDia, fortDia;
+    public GameObject soreDia, painDia, overDia, fortDia, explaina;
     bool on = false;
 
 	// Use this for initialization
@@ -26,7 +26,7 @@ public class DiagnoseButton : MonoBehaviour {
             painDia.SetActive(true);
             overDia.SetActive(true);
             fortDia.SetActive(true);
-            on = !on;
+            explaina.SetActive(true);
         }
         else
         {
@@ -34,8 +34,9 @@ public class DiagnoseButton : MonoBehaviour {
             painDia.SetActive(false);
             overDia.SetActive(false);
             fortDia.SetActive(false);
-            on = !on;
+            explaina.SetActive(false);
         }
+        on = !on;
     }
     public void Close()
     {
@@ -43,5 +44,7 @@ public class DiagnoseButton : MonoBehaviour {
         painDia.SetActive(false);
         overDia.SetActive(false);
         fortDia.SetActive(false);
+        explaina.SetActive(false);
+        on = false;
     }
 }
