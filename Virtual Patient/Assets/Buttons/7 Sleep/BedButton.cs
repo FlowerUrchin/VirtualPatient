@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BedButton : MonoBehaviour {
 
-    public GameObject sleepButton, bedpanToggle, bedpanClean, bedBath;
+    public GameObject sleepButton, bedpanToggle, bedpanClean, bedBath, shiftPat, massPatt;
     bool on = false;
 
 	// Use this for initialization
@@ -25,6 +25,8 @@ public class BedButton : MonoBehaviour {
             bedpanToggle.SetActive(true);
             bedpanClean.SetActive(true);
             bedBath.SetActive(true);
+            shiftPat.SetActive(true);
+            massPatt.SetActive(true);
             GameManager.instance.Canceller(2);
         }
         else
@@ -33,6 +35,8 @@ public class BedButton : MonoBehaviour {
             bedpanToggle.SetActive(false);
             bedpanClean.SetActive(false);
             bedBath.SetActive(false);
+            shiftPat.SetActive(false);
+            massPatt.SetActive(false);
         }
         on = !on;
     }
@@ -42,6 +46,8 @@ public class BedButton : MonoBehaviour {
         bedpanToggle.SetActive(false);
         bedpanClean.SetActive(false);
         bedBath.SetActive(false);
+        shiftPat.SetActive(false);
+        massPatt.SetActive(false);
         on = false;
     }
 }

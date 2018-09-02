@@ -13,22 +13,22 @@ public class GameManager : MonoBehaviour {
     public Text diagnoseResults;
 
     //Game Variables
-    float hunger, hungerMax = 30, hungerChange = 0.2f, full, tooFull; //Hunger
-    float thirst, thirstMax = 30, thirstChange = 0.5f; //Thirst
-    float bladder, bladderMax = 30, bladderChange = 0.3f; //Bladder
-    float hygiene = 30, hygieneMax = 30, hygieneChange = 0.1f; //Hygiene
-    float pain, painMax = 30, painChange = 0.2f; //Pain
-    float over, overMax = 30, overChange = 0.1f; //Overdose
-    float tire, tireMax = 30, awakeChange = 0.05f, sleepChange = 0.5f; //Tiredness
+    float hunger, hungerMax = 50, hungerChange = 0.2f, full, tooFull; //Hunger
+    float thirst, thirstMax = 50, thirstChange = 0.5f; //Thirst
+    float bladder, bladderMax = 50, bladderChange = 0.3f; //Bladder
+    float hygiene = 50, hygieneMax = 50, hygieneChange = 0.1f; //Hygiene
+    float pain, painMax = 50, painChange = 0.2f; //Pain
+    float over, overMax = 50, overChange = 0.1f; //Overdose
+    float tire, tireMax = 50, awakeChange = 0.05f, sleepChange = 0.5f; //Tiredness
     bool awake; //TirednessToggle
-    float sore, soreMax = 30, soreChange =0.8f, soreShift = 10; //Bed Sores
+    float sore, soreMax = 50, soreChange =0.4f, soreShift = 15; //Bed Sores
     //Major Game Variables
     float health, healthMax; //Health
     float happiness, happinessMax; //Happiness
     //Object Variables
-    float bedpan, bedpanMax = 10; //bedpan
+    float bedpan, bedpanMax = 15; //bedpan
     public bool bedpanUse = false;
-    float iv = 10, ivMax = 10; //IV Drip
+    float iv = 10, ivMax = 15; //IV Drip
     public bool ivUse = false;
     //Other Variables
     float fortify, fortifyChange = 0.05f; //Resistance to Overdose
