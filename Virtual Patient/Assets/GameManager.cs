@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour {
     //Objects
     public Text diagnoseResults;
 
+    //Medical Condition
+    bool sick, injured, internalinjured, mental;
+
     //Game Variables
     float hunger, hungerMax = 50, hungerChange = 0.2f, full, tooFull; //Hunger
     float thirst, thirstMax = 50, thirstChange = 0.5f; //Thirst
@@ -37,6 +40,9 @@ public class GameManager : MonoBehaviour {
 
     //Test Variables
     public float tHunger, tThirst, tBladder, tHygiene, tPain, tOver, tTire, tSore, tIV, tBP;
+
+    //Whether in combat, in which stats stop decreasing over time, or not.
+    bool inCombat = false;
 
     //Source Buttons
     public Button[] sourceButton = new Button[6];
@@ -69,10 +75,13 @@ public class GameManager : MonoBehaviour {
         tIV = iv;
         tBP = bedpan;
 
-        if(timeCheck <= Time.time)//Every Second 
+        if (!inCombat)
         {
-            GameVar();
-            timeCheck = Time.time + timeWait;
+            if (timeCheck <= Time.time)//Every Second 
+            {
+                GameVar();
+                timeCheck = Time.time + timeWait;
+            }
         }
 	}
 
@@ -441,3 +450,15 @@ public class GameManager : MonoBehaviour {
 //Required Implementations:
 //Health based on variables
 //Happiness based on variables
+//Patient State and Locking Options
+//Fitness stat
+//Nausea stat
+//Sickness Stat
+//Antibiotics
+//Anti-nausea
+//
+//
+//
+//
+//
+//
