@@ -105,6 +105,10 @@ public class GameManager : MonoBehaviour {
             {
                 iv = 0;
             }
+            if(thirst < 0)
+            {
+                thirst = 0;
+            }
         }
         else
         {
@@ -122,6 +126,10 @@ public class GameManager : MonoBehaviour {
             if(bedpan > bedpanMax)
             {
                 bedpan = bedpanMax;
+            }
+            if(bladder < 0)
+            {
+                bladder = 0;
             }
         }
         else
