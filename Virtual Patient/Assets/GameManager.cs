@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour {
     float hunger, hungerMax = 50, hungerChange = 0.2f, full, tooFull; //Hunger
     float thirst, thirstMax = 50, thirstChange = 0.5f; //Thirst
     float bladder, bladderMax = 50, bladderChange = 0.3f; //Bladder
-    float hygiene = 50, hygieneMax = 50, hygieneChange = 0.1f; //Hygiene
+    float hygiene = 50, hygieneMax = 50, hygieneChange = 0.2f; //Hygiene
     float pain, painMax = 50, painChange = 0.2f; //Pain
     float over, overMax = 50, overChange = 0.1f; //Overdose
     float tire, tireMax = 50, awakeChange = 0.05f, sleepChange = 0.5f; //Tiredness
