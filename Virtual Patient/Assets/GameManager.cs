@@ -20,14 +20,13 @@ public class GameManager : MonoBehaviour {
     float thirst, thirstMax = 50, thirstChange = 0.5f; //Thirst
     float bladder, bladderMax = 50, bladderChange = 0.3f; //Bladder
     float hygiene = 50, hygieneMax = 50, hygieneChange = 0.2f; //Hygiene
-    float pain, painMax = 50, painChange = 0.2f; //Pain
-    float over, overMax = 50, overChange = 0.1f; //Overdose
+    float fit = 10, fitMax = 50, fitChange;//Fitness
     float tire, tireMax = 50, awakeChange = 0.05f, sleepChange = 0.5f; //Tiredness
     bool awake; //TirednessToggle
     float sore, soreMax = 50, soreChange =0.4f, soreShift = 15; //Bed Sores
     //Major Game Variables
-    float health, healthMax; //Health
-    float happiness, happinessMax; //Happiness
+    float health = 25, healthMax = 25; //Health
+    float happiness = 50, happinessMax = 100; //Happiness
     //Object Variables
     float bedpan, bedpanMax = 15; //bedpan
     public bool bedpanUse = false;
@@ -37,6 +36,17 @@ public class GameManager : MonoBehaviour {
     float fortify, fortifyChange = 0.05f; //Resistance to Overdose
     //NonGame Variables
     float timeCheck = 0, timeWait = 1;
+
+    //Disease Variables
+    float pain = 0, painMax = 50, painChange = 0.2f; //Pain
+    float nausea = 0, nauseaMax = 50, nauseaChange = 0.1f; //Nausea
+    float sickness = 0, sickMax = 50, sickChange = 0.2f; //Sickness
+    float mentalill = 0, mentalMax = 50, mentalChange = 0.2f; //Mentalilness
+
+    //Medicine Variables
+    float over, overMax = 50, overChange = 0.1f; //Overdose
+
+
 
     //Test Variables
     public float tHunger, tThirst, tBladder, tHygiene, tPain, tOver, tTire, tSore, tIV, tBP;
@@ -79,19 +89,19 @@ public class GameManager : MonoBehaviour {
         {
             if (timeCheck <= Time.time)//Every Second 
             {
-                GameVar();
+                GameVar(1);
                 timeCheck = Time.time + timeWait;
             }
         }
 	}
 
     //GameVariable Section:
-    void GameVar()//Updates all variables based on time
+    void GameVar(int timeMultiplier)//Updates all variables based on time
     {
         //Hunger
         if(full == 0) //Checks if the patient was stuffed
         {
-            hunger += hungerChange;
+            hunger += hungerChange*timeMultiplier;
             if (hunger > hungerMax)
             {
                 hunger = hungerMax;
@@ -99,19 +109,21 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            full -= hungerChange;
+            full -= hungerChange * timeMultiplier;
             if(full < 0)
             {
+                hunger -= full;
                 full = 0;
             }
         }
         //Thirst and iv
         if(ivUse && iv != 0)
         {
-            iv -= thirstChange;
-            thirst -= 0.1f;
+            iv -= thirstChange * timeMultiplier;
+            thirst -= 0.1f * timeMultiplier;
             if(iv < 0)
             {
+                thirst -= iv;
                 iv = 0;
             }
             if(thirst < 0)
@@ -121,7 +133,7 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            thirst += thirstChange;
+            thirst += thirstChange * timeMultiplier;
             if (thirst > thirstMax)
             {
                 thirst = thirstMax;
@@ -130,10 +142,11 @@ public class GameManager : MonoBehaviour {
         //Bladder and Bedpan
         if (bedpanUse && bedpan != bedpanMax)
         {
-            bedpan += bladderChange;
-            bladder -= bladderChange;
+            bedpan += bladderChange * timeMultiplier;
+            bladder -= bladderChange * timeMultiplier;
             if(bedpan > bedpanMax)
             {
+                bladder -= bedpan;
                 bedpan = bedpanMax;
             }
             if(bladder < 0)
@@ -143,7 +156,7 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            bladder += bladderChange;
+            bladder += bladderChange * timeMultiplier;
             {
                 if (bladder > bladderMax)
                 {
@@ -153,27 +166,15 @@ public class GameManager : MonoBehaviour {
         }
 
         //Hygiene
-        hygiene -= hygieneChange;
+        hygiene -= hygieneChange * timeMultiplier;
         if(hygiene < 0)
         {
             hygiene = 0;
         }
-        //Pain
-        pain += painChange;
-        if(pain > painMax)
-        {
-            pain = painMax;
-        }
-        //Overdose
-        over -= overChange;
-        if(over < 0)
-        {
-            over = 0;
-        }
         //Tiredness:
         if (awake)
         {
-            tire += awakeChange;
+            tire += awakeChange * timeMultiplier;
             if(tire > tireMax)
             {
                 tire = tireMax;
@@ -182,7 +183,7 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            tire -= sleepChange;
+            tire -= sleepChange * timeMultiplier;
             if(tire < 0)
             {
                 tire = 0;
@@ -190,13 +191,44 @@ public class GameManager : MonoBehaviour {
             }
         }
         //Bedsores
-        sore += soreChange;
+        sore += soreChange * timeMultiplier;
         if(sore > soreMax)
         {
             sore = soreMax;
         }
+
+        //Pain
+        pain += painChange * timeMultiplier;
+        if (pain > painMax)
+        {
+            pain = painMax;
+        }
+        //Nausea
+        nausea -= nauseaChange * timeMultiplier;
+        if(nausea < 0)
+        {
+            nausea = 0;
+        }
+        //Sickness
+        sickness += sickChange * timeMultiplier;
+        if(sickness > sickMax)
+        {
+            sickness = sickMax;
+        }
+        //Mental Illness
+        mentalill += mentalChange;
+        if(mentalill > mentalMax)
+        {
+            mentalill = mentalMax;
+        }
+        //Overdose
+        over -= overChange * timeMultiplier;
+        if (over < 0)
+        {
+            over = 0;
+        }
         //Fortify/Resistance to overdose
-        fortify -= fortifyChange;
+        fortify -= fortifyChange * timeMultiplier;
         if(fortify < 0)
         {
             fortify = 0;
@@ -340,6 +372,18 @@ public class GameManager : MonoBehaviour {
     {
         return pain;
     }
+    public float GetNausea()
+    {
+        return nausea;
+    }
+    public float GetIll()
+    {
+        return sickness;
+    }
+    public float GetMental()
+    {
+        return mentalill;
+    }
     public float GetOver()
     {
         return over;
@@ -389,6 +433,18 @@ public class GameManager : MonoBehaviour {
         {
             diagnoseResults.text = "Overdose Resistance at " + (int)fortify;
         }
+        if(order == 5)//Nausea
+        {
+            diagnoseResults.text = "Nausea at " + (int)nausea + " out of " + nauseaMax;
+        }
+        if(order == 6)//Illness
+        {
+            diagnoseResults.text = "Illness at " + (int)sickness + " out of " + sickMax;
+        }
+        if(order == 7)//Mental illness
+        {
+            diagnoseResults.text = "Mental Illness at " + (int)mentalill + " out of " + mentalMax;
+        }
     }
 
     #endregion
@@ -426,6 +482,17 @@ public class GameManager : MonoBehaviour {
                 }
             }
         }
+    }
+    #endregion
+
+    #region TimeSkip
+    public void TimeJumpHour()
+    {
+        GameVar(3600);
+    }
+    public void TimeJumpMinute()
+    {
+        GameVar(60);
     }
     #endregion
 

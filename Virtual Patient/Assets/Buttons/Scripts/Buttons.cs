@@ -17,6 +17,7 @@ public class Buttons : MonoBehaviour {
     {
         awake = GameManager.instance.IfAwake();
 	}
+    #region Buttons
     public void GiveFood()
     {
         if (awake)
@@ -114,4 +115,12 @@ public class Buttons : MonoBehaviour {
         GameManager.instance.SleepState();
         GameManager.instance.Canceller(10);//closes all buttons
     }
+    #endregion
+
+    #region Timeskip
+    public void TimeSkipper()
+    {
+        GameManager.instance.TimeJumpMinute();
+    }
+    #endregion
 }
