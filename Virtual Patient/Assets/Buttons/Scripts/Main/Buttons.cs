@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Buttons : MonoBehaviour {
 
@@ -22,7 +23,7 @@ public class Buttons : MonoBehaviour {
     {
         if (awake)
         {
-            GameManager.instance.Feed(10, 1);
+            GameManager.instance.Feed(1800, 1);
             //Work in Fullness, Fitness
             GameManager.instance.Canceller(10);//closes all buttons
         }
@@ -31,7 +32,7 @@ public class Buttons : MonoBehaviour {
     {
         if (awake)
         {
-            GameManager.instance.Drink(10);
+            GameManager.instance.Drink(900);
             GameManager.instance.Canceller(10);//closes all buttons
         }
     }
@@ -68,7 +69,7 @@ public class Buttons : MonoBehaviour {
     {
         if (awake)
         {
-            GameManager.instance.Clean(30); //Should be max clean
+            GameManager.instance.Clean(3600); //Should be max clean
             GameManager.instance.Canceller(10);//closes all buttons
         }
     }
@@ -76,7 +77,7 @@ public class Buttons : MonoBehaviour {
     {
         if (awake)
         {
-            GameManager.instance.Clean(15);
+            GameManager.instance.Clean(1600);
             GameManager.instance.Canceller(10);//closes all buttons
         }
     }
@@ -84,7 +85,7 @@ public class Buttons : MonoBehaviour {
     {
         if (awake)
         {
-            GameManager.instance.Clean(5);
+            GameManager.instance.Clean(600);
             GameManager.instance.Canceller(10);//closes all buttons
         }
     }
@@ -93,7 +94,7 @@ public class Buttons : MonoBehaviour {
         if (awake)
         {
             //Get Strength and stuff from  Painkiller item
-            GameManager.instance.Painkiller(10, 1);
+            GameManager.instance.Painkiller();
             GameManager.instance.Canceller(10);//closes all buttons
         }
     }
@@ -114,6 +115,10 @@ public class Buttons : MonoBehaviour {
     {
         GameManager.instance.SleepState();
         GameManager.instance.Canceller(10);//closes all buttons
+    }
+    public void MedicalCabinet()
+    {
+        SceneManager.LoadScene("Medicine Cabinet");
     }
     #endregion
 

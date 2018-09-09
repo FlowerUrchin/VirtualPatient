@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DoorButton : MonoBehaviour {
 
-    public GameObject shower, toilet;
+    public GameObject shower, toilet, medical;
     bool on;
 
 	// Use this for initialization
@@ -23,12 +23,14 @@ public class DoorButton : MonoBehaviour {
         {
             shower.SetActive(true);
             toilet.SetActive(true);
+            medical.SetActive(true);
             GameManager.instance.Canceller(5);
         }
         else
         {
             shower.SetActive(false);
             toilet.SetActive(false);
+            medical.SetActive(false);
         }
         on = !on;
     }
@@ -36,6 +38,7 @@ public class DoorButton : MonoBehaviour {
     {
         shower.SetActive(false);
         toilet.SetActive(false);
+        medical.SetActive(false);
         on = false;
     }
 }

@@ -14,45 +14,56 @@ public class GameManager : MonoBehaviour {
 
     //Medical Condition
     bool sick, injured, internalinjured, mental;
+    int state = 1; //1 = Bed, 2 = Weak, 3 = Recovering
 
-    //Game Variables
-    float hunger, hungerMax = 50, hungerChange = 0.2f, full, tooFull; //Hunger
-    float thirst, thirstMax = 50, thirstChange = 0.5f; //Thirst
-    float bladder, bladderMax = 50, bladderChange = 0.3f; //Bladder
-    float hygiene = 50, hygieneMax = 50, hygieneChange = 0.2f; //Hygiene
-    float fit = 10, fitMax = 50, fitChange;//Fitness
-    float tire, tireMax = 50, awakeChange = 0.05f, sleepChange = 0.5f; //Tiredness
-    bool awake; //TirednessToggle
-    float sore, soreMax = 50, soreChange =0.4f, soreShift = 15; //Bed Sores
+    #region Game Variables
+    static float hunger, hungerMax = 3600, hungerChange = 1, full, tooFull; //Hunger
+    static float thirst, thirstMax = 3600, thirstChange = 2; //Thirst
+    static float bladder, bladderMax = 3600, bladderChange = 1.5f; //Bladder
+    static float hygiene = 3600, hygieneMax = 3600, hygieneChange = 0.3f; //Hygiene
+    static float fit = 10, fitMax = 50, fitChange;//Fitness88888888888888888888888888888888888888888888888888888888888
+    static float tire, tireMax = 3600, awakeChange = 1, sleepChange = 20; //Tiredness
+    static bool awake; //TirednessToggle
+    static float sore, soreMax = 3600, soreChange = 2.5f, soreShift = 800; //Bed Sores
     //Major Game Variables
-    float health = 25, healthMax = 25; //Health
-    float happiness = 50, happinessMax = 100; //Happiness
+    static float health = 25, healthMax = 25; //Health88888888888888888888888888888888888888888888888888888888888
+    static float happiness = 50, happinessMax = 100; //Happiness88888888888888888888888888888888888888888888888888888888888
     //Object Variables
-    float bedpan, bedpanMax = 15; //bedpan
-    public bool bedpanUse = false;
-    float iv = 10, ivMax = 15; //IV Drip
-    public bool ivUse = false;
+    static float bedpan, bedpanMax = 1800; //bedpan
+    static public bool bedpanUse = false;
+    static float iv = 1800, ivMax = 1800; //IV Drip
+    static public bool ivUse = false;
     //Other Variables
-    float fortify, fortifyChange = 0.05f; //Resistance to Overdose
+    static float fortify, fortifyChange = 0.05f; //Resistance to Overdose88888888888888888888888888888888888888888888888888888888888
     //NonGame Variables
-    float timeCheck = 0, timeWait = 1;
+    static float timeCheck = 0, timeWait = 1;
+    #endregion
 
-    //Disease Variables
-    float pain = 0, painMax = 50, painChange = 0.2f; //Pain
-    float nausea = 0, nauseaMax = 50, nauseaChange = 0.1f; //Nausea
-    float sickness = 0, sickMax = 50, sickChange = 0.2f; //Sickness
-    float mentalill = 0, mentalMax = 50, mentalChange = 0.2f; //Mentalilness
+    #region Disease Variables
+    static float pain = 0, painMax = 50, painChange = 0.2f; //Pain
+    static float nausea = 0, nauseaMax = 50, nauseaChange = 0.1f; //Nausea
+    static float sickness = 0, sickMax = 50, sickChange = 0.2f; //Sickness
+    static float mentalill = 0, mentalMax = 50, mentalChange = 0.2f; //Mentalilness
+    #endregion
+
+    #region Medication
 
     //Medicine Variables
-    float over, overMax = 50, overChange = 0.1f; //Overdose
+    static float over, overMax = 50, overChange = 0.1f; //Overdose
 
+    //Medicine Bottle
+    static string medType, requiredType;
+    static int strength; //1-3
+    static float overD;
+    static int contents = 0, contentsMax = 10; //How many pills left
 
+    #endregion
 
     //Test Variables
     public float tHunger, tThirst, tBladder, tHygiene, tPain, tOver, tTire, tSore, tIV, tBP;
 
     //Whether in combat, in which stats stop decreasing over time, or not.
-    bool inCombat = false;
+    static bool inCombat = false;
 
     //Source Buttons
     public Button[] sourceButton = new Button[6];
@@ -278,22 +289,25 @@ public class GameManager : MonoBehaviour {
             hygiene = hygieneMax;
         }
     }
-    public void Painkiller(float relief, float overdose)//Lowers Pain, Raises Overdose
+    public void Painkiller()//Lowers Pain, Raises Overdose
     {
-        pain -= relief;
-        float totalDose = overdose - fortify;
-        if(totalDose < 0)
+        if(contents > 0)
         {
-            totalDose = 0.1f;
-        }
-        over += totalDose;
-        if(pain < 0)
-        {
-            pain = 0;
-        }
-        if(over > overMax)
-        {
-            over = overMax;
+            pain -= strength*5;
+            float totalDose = overD - fortify;
+            if (totalDose < 0)
+            {
+                totalDose = 0.1f;
+            }
+            over += totalDose;
+            if (pain < 0)
+            {
+                pain = 0;
+            }
+            if (over > overMax)
+            {
+                over = overMax;
+            }
         }
     }
     public void ShiftPosition()
@@ -449,6 +463,16 @@ public class GameManager : MonoBehaviour {
 
     #endregion
 
+    #region medicalCabinet
+    public void FillMed(string name, int power, float od)
+    {
+        medType = name;
+        strength = power;
+        overD = od;
+        contents = contentsMax;
+    }
+    #endregion
+
     #region Cancel Call
     public void Canceller(int button) //Closes all other buttons
     {
@@ -513,6 +537,8 @@ public class GameManager : MonoBehaviour {
 //tooFull having an affect. Lessen fitness, raise nausea.
 //Maybe have both Full decrease and Hunger Increase?
 //Bedsores only lessens when shifted, massage action added
+
+//Popup if content empty with medicine
 
 //Required Implementations:
 //Health based on variables
