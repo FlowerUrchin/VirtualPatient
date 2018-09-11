@@ -289,27 +289,6 @@ public class GameManager : MonoBehaviour {
             hygiene = hygieneMax;
         }
     }
-    public void Painkiller()//Lowers Pain, Raises Overdose
-    {
-        if(contents > 0)
-        {
-            pain -= strength*5;
-            float totalDose = overD - fortify;
-            if (totalDose < 0)
-            {
-                totalDose = 0.1f;
-            }
-            over += totalDose;
-            if (pain < 0)
-            {
-                pain = 0;
-            }
-            if (over > overMax)
-            {
-                over = overMax;
-            }
-        }
-    }
     public void ShiftPosition()
     {
         sore -= soreShift;
@@ -339,6 +318,54 @@ public class GameManager : MonoBehaviour {
 
         BedpanActive = !BedpanActive;
         BPSlider.SetActive(BedpanActive);
+    }
+
+    public void Medication()
+    {
+        if(medType == "Painkiller")//Pain
+        {
+            Painkiller();
+        }
+        if(medType == "")//Sickness
+        {
+            if (sick)
+            {
+
+            }
+            else//If not sick, bad effects increase
+            {
+
+            }
+        }
+        if (medType == "")//Nausea
+        {
+
+        }
+        if (medType == "")//Mental
+        {
+
+        }
+    }
+    public void Painkiller()//Lowers Pain, Raises Overdose
+    {
+        if (contents > 0)
+        {
+            pain -= strength * 5;
+            float totalDose = overD - fortify;
+            if (totalDose < 0)
+            {
+                totalDose = 0.1f;
+            }
+            over += totalDose;
+            if (pain < 0)
+            {
+                pain = 0;
+            }
+            if (over > overMax)
+            {
+                over = overMax;
+            }
+        }
     }
 
     #endregion
