@@ -1,16 +1,16 @@
 fileFormatVersion: 2
-guid: e044447cb5b21d943a25d21fa979c78d
-timeCreated: 1537062877
+guid: d0742232299079a4b86ff59c527ce466
+timeCreated: 1537095031
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
   fileIDToRecycleName:
-    100000: Armature.003
+    100000: Armature.004
     100002: BODY
-    100004: Circle.003
-    100006: Cube.009
-    100008: Cube.010
-    100010: Cube.011
+    100004: Circle.004
+    100006: Cube.012
+    100008: Cube.013
+    100010: Cube.014
     100012: HEAD
     100014: JAW
     100016: JAW_end
@@ -62,12 +62,12 @@ ModelImporter:
     100108: SPINE
     100110: UPPER MOUTH
     100112: UPPER MOUTH_end
-    400000: Armature.003
+    400000: Armature.004
     400002: BODY
-    400004: Circle.003
-    400006: Cube.009
-    400008: Cube.010
-    400010: Cube.011
+    400004: Circle.004
+    400006: Cube.012
+    400008: Cube.013
+    400010: Cube.014
     400012: HEAD
     400014: JAW
     400016: JAW_end
@@ -119,32 +119,32 @@ ModelImporter:
     400108: SPINE
     400110: UPPER MOUTH
     400112: UPPER MOUTH_end
-    2100000: SKIN.003
-    2100002: PANTS.003
-    2100004: HAIR.003
-    2100006: MOUTH.003
-    2100008: TEETH.003
-    2100010: TSHIRT.003
-    2100012: SHOE.003
-    2100014: EYE LEFT.003
-    2100016: EYE COL.003
-    2100018: PUPLE.003
-    2100020: EYE RIGHT.003
-    2300000: Circle.003
-    3300000: Circle.003
-    4300000: Circle.003
-    4300002: Cube.009
-    4300004: Cube.010
-    4300006: Cube.011
-    7400000: IDLE
-    7400002: Walk Good
-    7400004: Walk Mid
-    7400006: Walk Bad
-    7400008: Armature.003|ArmatureAction.003
+    2100000: SKIN.009
+    2100002: PANTS.011
+    2100004: HAIR.011
+    2100006: MOUTH.011
+    2100008: TEETH.011
+    2100010: TSHIRT.011
+    2100012: SHOE.011
+    2100014: EYE LEFT.011
+    2100016: EYE COL.011
+    2100018: PUPLE.011
+    2100020: EYE RIGHT.011
+    2300000: Circle.004
+    3300000: Circle.004
+    4300000: Circle.004
+    4300002: Cube.012
+    4300004: Cube.013
+    4300006: Cube.014
+    7400000: Armature.004|Bad
+    7400002: Armature.004|Cube.016Action.001
+    7400004: Armature.004|Good
+    7400006: Armature.004|idle
+    7400008: Armature.004|Mid
     9500000: //RootNode
-    13700000: Cube.009
-    13700002: Cube.010
-    13700004: Cube.011
+    13700000: Cube.012
+    13700002: Cube.013
+    13700004: Cube.014
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -173,8 +173,64 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: IDLE
-      takeName: Armature.003|Armature.003Action
+      name: Armature.004|Bad
+      takeName: Armature.004|Bad
+      firstFrame: 1
+      lastFrame: 29
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature.004|Good
+      takeName: Armature.004|Good
+      firstFrame: 1
+      lastFrame: 29
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature.004|idle
+      takeName: Armature.004|idle
       firstFrame: 1
       lastFrame: 34
       wrapMode: 0
@@ -201,66 +257,10 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Walk Good
-      takeName: Armature.003|ArmatureAction
+      name: Armature.004|Mid
+      takeName: Armature.004|Mid
       firstFrame: 1
       lastFrame: 29
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: Walk Mid
-      takeName: Armature.003|ArmatureAction.001
-      firstFrame: 1
-      lastFrame: 29
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: Walk Bad
-      takeName: Armature.003|ArmatureAction.002
-      firstFrame: 1
-      lastFrame: 30
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

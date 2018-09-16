@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: e044447cb5b21d943a25d21fa979c78d
-timeCreated: 1537062877
+guid: 47a259710fdc0b1409f4be3326773b49
+timeCreated: 1537093543
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -119,28 +119,32 @@ ModelImporter:
     400108: SPINE
     400110: UPPER MOUTH
     400112: UPPER MOUTH_end
-    2100000: SKIN.003
-    2100002: PANTS.003
-    2100004: HAIR.003
-    2100006: MOUTH.003
-    2100008: TEETH.003
-    2100010: TSHIRT.003
-    2100012: SHOE.003
-    2100014: EYE LEFT.003
-    2100016: EYE COL.003
-    2100018: PUPLE.003
-    2100020: EYE RIGHT.003
+    2100000: SKIN.007
+    2100002: PANTS.007
+    2100004: HAIR.007
+    2100006: MOUTH.007
+    2100008: TEETH.007
+    2100010: TSHIRT.007
+    2100012: SHOE.007
+    2100014: EYE LEFT.007
+    2100016: EYE COL.007
+    2100018: PUPLE.007
+    2100020: EYE RIGHT.007
     2300000: Circle.003
     3300000: Circle.003
     4300000: Circle.003
     4300002: Cube.009
     4300004: Cube.010
     4300006: Cube.011
-    7400000: IDLE
-    7400002: Walk Good
-    7400004: Walk Mid
-    7400006: Walk Bad
-    7400008: Armature.003|ArmatureAction.003
+    7400000: Armature.003|Armature.003Action
+    7400002: Armature.003|ArmatureAction
+    7400004: Armature.003|ArmatureAction.001
+    7400006: Armature.003|ArmatureAction.002
+    7400008: Armature.003|Cube.016Action
+    7400010: Armature.003|Idle
+    7400012: Armature.003|Walk Bad
+    7400014: Armature.003|Walk good
+    7400016: Armature.003|Walk Mid
     9500000: //RootNode
     13700000: Cube.009
     13700002: Cube.010
@@ -173,8 +177,8 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: IDLE
-      takeName: Armature.003|Armature.003Action
+      name: Armature.003|Idle
+      takeName: Armature.003|Idle
       firstFrame: 1
       lastFrame: 34
       wrapMode: 0
@@ -201,8 +205,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Walk Good
-      takeName: Armature.003|ArmatureAction
+      name: Armature.003|Walk Bad
+      takeName: Armature.003|Walk Bad
       firstFrame: 1
       lastFrame: 29
       wrapMode: 0
@@ -229,8 +233,8 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Walk Mid
-      takeName: Armature.003|ArmatureAction.001
+      name: Armature.003|Walk good
+      takeName: Armature.003|Walk good
       firstFrame: 1
       lastFrame: 29
       wrapMode: 0
@@ -257,10 +261,10 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Walk Bad
-      takeName: Armature.003|ArmatureAction.002
+      name: Armature.003|Walk Mid
+      takeName: Armature.003|Walk Mid
       firstFrame: 1
-      lastFrame: 30
+      lastFrame: 29
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
