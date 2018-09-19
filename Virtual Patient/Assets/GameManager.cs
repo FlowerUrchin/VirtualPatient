@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
     #region setup
 
     public static GameManager instance = null;
+    public GameObject player;
 
     //Objects
     public Text diagnoseResults;
@@ -281,6 +282,11 @@ public class GameManager : MonoBehaviour {
     {
         bedpan = 0;
     }
+
+    public void TakeShower(){
+        player.GetComponent<Player>().moveTo = Player.movement.shower;
+    }
+
     public void Clean(float clean) //Raises Hygiene
     {
         hygiene += clean;
