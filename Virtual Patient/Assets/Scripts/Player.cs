@@ -4,22 +4,40 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    public enum movement
+    public enum position
     {
-        idle,
-        bed,
-        shower
+        DiagnoseMachine,
+        FoodTray,
+        Bed,
+        Sink,
+        Door,
+        Middle,
+        empty
     };
 
-    public enum states{
+    public enum evolution{
         bad,
         mild,
         good
     }
 
-    public movement moveTo;
+    public enum states
+    {
+        awake,
+        sleep,
+        fighting
+    }
+
     public states playerState;
+
+    public position moveTo;
+    private position lastPosition;
+    public evolution currentEvolution;
+
     public GameObject player;
+    public GameObject wayPointsParent;
+
+    private List<Transform> wayPoints;
 
     private int walkingSpeed = 100;
     //public int rotationSpeed = 10;
@@ -31,23 +49,69 @@ public class Player : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-        playerState = states.bad;
+        playerState = states.awake;
+        currentEvolution = evolution.bad;
+        moveTo = position.empty;
+        wayPoints = new List<Transform>();
+
+        foreach (Transform child in wayPointsParent.transform)
+        {
+            wayPoints.Add(child);
+        }
+
+        lastPosition = position.empty;
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        if(moveTo == movement.shower){
-
-            //animate the player to move to the shower
-            if (!standing)
-                StandUp();
-
-            if (standing)
-                walkTowards(new Vector3(-330, 10, -450));
-
+        if(lastPosition != moveTo)
+        {
+            switch(moveTo)
+            {
+                case position.DiagnoseMachine:
+                    this.GetComponent<PathFinding>().NagivateTo(wayPoints.Find(x => x.gameObject.name == "DiagnoseMachineWP").transform.position);
+                    break;
+                case position.Bed:
+                    //Debug.Log(wayPoints.Find(x => x.gameObject.name == "BedWP").transform.position);
+                    this.GetComponent<PathFinding>().NagivateTo(wayPoints.Find(x => x.gameObject.name == "BedWP").transform.position);
+                    break;
+                case position.Door:
+                    this.GetComponent<PathFinding>().NagivateTo(wayPoints.Find(x => x.gameObject.name == "DoorWP").transform.position);
+                    break;
+                case position.FoodTray:
+                    this.GetComponent<PathFinding>().NagivateTo(wayPoints.Find(x => x.gameObject.name == "FoodTrayWP").transform.position);
+                    break;
+                case position.Middle:
+                    this.GetComponent<PathFinding>().NagivateTo(wayPoints.Find(x => x.gameObject.name == "MiddleWP").transform.position);
+                    break;
+                case position.Sink:
+                    this.GetComponent<PathFinding>().NagivateTo(wayPoints.Find(x => x.gameObject.name == "SinkWP").transform.position);
+                    break;
+                case position.empty:
+                    this.GetComponent<PathFinding>().Stop();
+                    break;
+            }
         }
+
+        if (this.GetComponent<PathFinding>().currentPath != null && this.GetComponent<PathFinding>().currentPath.Count != 0)
+            toggleWalkAnimation(true);
+        else
+            toggleWalkAnimation(false);
+
+        lastPosition = moveTo;
+
+        //if(moveTo == movement.shower){
+
+        //    //animate the player to move to the shower
+        //    if (!standing)
+        //        StandUp();
+
+        //    if (standing)
+        //        walkTowards(new Vector3(-330, 10, -450));
+
+        //}
 
 	}
 
@@ -67,21 +131,21 @@ public class Player : MonoBehaviour {
             
     }
 
-    void walkTowards(Vector3 location){
+    //void walkTowards(Vector3 location){
 
-        float step = walkingSpeed * Time.deltaTime;
-        player.transform.position = Vector3.MoveTowards(player.transform.position, location, step);
+        //float step = walkingSpeed * Time.deltaTime;
+        //player.transform.position = Vector3.MoveTowards(player.transform.position, location, step);
 
-        Animator anim = player.GetComponent<Animator>();
+        //Animator anim = player.GetComponent<Animator>();
 
-        toggleWalkAnimation(true);
+        //toggleWalkAnimation(true);
 
-        if(player.transform.position == location){
-            toggleWalkAnimation(false);
-            this.moveTo = movement.idle;
-        }
+        //if(player.transform.position == location){
+        //    toggleWalkAnimation(false);
+        //    this.moveTo = position.idle;
+        //}
 
-    }
+    //}
 
     void toggleWalkAnimation(bool toggle){
 
@@ -92,16 +156,16 @@ public class Player : MonoBehaviour {
             Animator anim = player.GetComponent<Animator>();
 
             //depending on the players state set the walking animation
-            switch (playerState)
+            switch (currentEvolution)
             {
-                case states.bad://bad
+                case evolution.bad://bad
                     anim.SetLayerWeight(1, 1);
                     break;
-                case states.mild://mild
+                case evolution.mild://mild
                     anim.SetLayerWeight(3, 1);
                     break;
 
-                case states.good://good
+                case evolution.good://good
                     anim.SetLayerWeight(2, 1);
                     break;
 

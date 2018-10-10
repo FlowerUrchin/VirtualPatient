@@ -20,31 +20,31 @@ public class Sliders : MonoBehaviour {
     {
         if(role == "Hunger Slider")
         {
-            slider.value = GameManager.instance.GetHunger();
+            slider.value = GameManager.instance.getStatus("hunger").statusValue;
         }
         else if(role == "Thirst Slider")
         {
-            slider.value = GameManager.instance.GetThirst();
+            slider.value = GameManager.instance.getStatus("thirst").statusValue;
         }
         else if (role == "IV Slider")
         {
-            slider.value = GameManager.instance.GetIV();
+            slider.value = 0;// GameManager.instance.GetIV();
         }
         else if (role == "Bladder Slider")
         {
-            slider.value = GameManager.instance.GetBladder();
+            slider.value = GameManager.instance.getStatus("bladder").statusValue;
         }
         else if (role == "Bedpan Slider")
         {
-            slider.value = GameManager.instance.GetBedpan();
+            slider.value = 0;//GameManager.instance.GetBedpan();
         }
         else if (role == "Hygiene Slider")
         {
-            slider.value = GameManager.instance.GetHygiene();
+            slider.value = GameManager.instance.getStatus("hygiene").statusValue;
         }
         else if(role == "Sleep Slider")
         {
-            slider.value = GameManager.instance.GetTire();
+            slider.value = GameManager.instance.getStatus("tiredness").statusValue;
         }
 	}
 }
