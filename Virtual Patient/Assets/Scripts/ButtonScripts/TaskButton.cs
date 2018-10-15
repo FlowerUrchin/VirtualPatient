@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShowerButton : MonoBehaviour {
+public class TaskButton : MonoBehaviour {
 
     private GameManager gameManager;
     public UnityEngine.UI.Button button;
+    public string task;
 
     // Use this for initialization
     void Start()
@@ -14,7 +15,9 @@ public class ShowerButton : MonoBehaviour {
         //saves having to manually put the game manager in everytime
         gameManager = GameManager.instance;
         button = gameObject.GetComponent<UnityEngine.UI.Button>();
-        button.onClick.AddListener(Shower);
+        button.onClick.AddListener(CancelTask);
+
+        this.button.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = task;
 
     }
 
@@ -24,15 +27,13 @@ public class ShowerButton : MonoBehaviour {
 
     }
 
-    void Shower()
+    public void CancelTask()
     {
 
-        if (gameManager.currentTask.Count > 0)
-        {
-            gameManager.currentTask.Clear();
-        }
-
-        gameManager.currentTask.Add(new Task("Shower", Player.position.Door, "hygiene", 0.2f, gameManager.player, Task.type.status));
+        Task thistask = gameManager.currentTask.Find(x => x.name == task);
+        thistask.CancelTask();
+        gameManager.currentTask.Remove(thistask);
+        gameManager.player.GetComponent<Player>().moveTo = Player.position.empty;
 
     }
 

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour {
-
-    #region setup
+public class GameManager : MonoBehaviour
+{
 
     public static GameManager instance = null;
     public GameObject player;
@@ -18,7 +17,6 @@ public class GameManager : MonoBehaviour {
     bool sick, injured, internalinjured, mental;
     int state = 1; //1 = Bed, 2 = Weak, 3 = Recovering
 
-    #region Game Variables
     //Status Variables
     public Status[] statuses;
     public Diagnosis[] diagnoses;
@@ -34,27 +32,27 @@ public class GameManager : MonoBehaviour {
     public float tirednessDecay;
 
     //Diagnosis variables
-    public int maxBedSores = 500;
-    public int bedSoresDamagePercent = 40;
-    public int bedSoresDamage = 10;
-    public float BedSoreDecay;
+    private int maxBedSores = 500;
+    private int bedSoresDamagePercent = 40;
+    private int bedSoresDamage = 10;
+    private float BedSoreDecay;
 
-    public int maxPain = 1000;
-    public int painDamagePercent = 60;
-    public int painDamage = 20;
-    public float painDecay;
+    private int maxPain = 1000;
+    private int painDamagePercent = 60;
+    private int painDamage = 20;
+    private float painDecay;
 
-    public int maxOverDose = 1000;
-    public int overDoseDamagePercent = 60;
-    public int overDoseDamage = 30;
-    public float overDoseDecay;
+    private int maxOverDose = 1000;
+    private int overDoseDamagePercent = 60;
+    private int overDoseDamage = 30;
+    private float overDoseDecay;
 
-    public int maxBloodToxicity = 1000;
-    public int bloodToxicityPercent = 80;
-    public int bloodToxicityDamage = 50;
-    public float bloodToxicityDecay;
+    private int maxBloodToxicity = 1000;
+    private int bloodToxicityPercent = 80;
+    private int bloodToxicityDamage = 50;
+    private float bloodToxicityDecay;
 
-    public List<Task> currentTask = new List<Task>();
+    public List<Task> currentTask { get; set; }
 
     private float bedsore { get; set; }
     private float pain { get; set; }
@@ -63,43 +61,17 @@ public class GameManager : MonoBehaviour {
     private float mentalill { get; set; }
 
     //Time Variables
-    static float lastTime = 0;
-    static float waitTime = 1;
+    private float lastTime = 0;
+    private float waitTime = 1;
     private float addValueLastTime = 0;
     private float addValueWaitTime = 1;
 
-    public float lastDiagnoseTime = 0;
+    public float lastDiagnoseTime { get; set; }
 
-    //static float hunger, hungerMax = 3600, hungerChange = 1, full, tooFull; //Hunger
-    //static float thirst, thirstMax = 3600, thirstChange = 2; //Thirst
-    //static float bladder, bladderMax = 3600, bladderChange = 1.5f; //Bladder
-    //static float hygiene = 3600, hygieneMax = 3600, hygieneChange = 0.3f; //Hygiene
-    //static float fit = 10, fitMax = 50, fitChange;//Fitness88888888888888888888888888888888888888888888888888888888888
-    //static float tire, tireMax = 3600, awakeChange = 1, sleepChange = 20; //Tiredness
-    //static bool awake; //TirednessToggle
-    //static float sore, soreMax = 3600, soreChange = 2.5f, soreShift = 800; //Bed Sores
-    ////Major Game Variables
-    //static float health = 25, healthMax = 25; //Health88888888888888888888888888888888888888888888888888888888888
-    //static float happiness = 50, happinessMax = 100; //Happiness88888888888888888888888888888888888888888888888888888888888
-    ////Object Variables
-    //static float bedpan, bedpanMax = 1800; //bedpan
-    //static public bool bedpanUse = false;
-    //static float iv = 1800, ivMax = 1800; //IV Drip
-    //static public bool ivUse = false;
-    ////Other Variables
-    //static float fortify, fortifyChange = 0.05f; //Resistance to Overdose88888888888888888888888888888888888888888888888888888888888
-    ////NonGame Variables
-    //static float timeCheck = 0, timeWait = 1;
-    #endregion
-
-    #region Disease Variables
     //static float pain = 0, painMax = 50, painChange = 0.2f; //Pain
     //static float nausea = 0, nauseaMax = 50, nauseaChange = 0.1f; //Nausea
     //static float sickness = 0, sickMax = 50, sickChange = 0.2f; //Sickness
     //static float mentalill = 0, mentalMax = 50, mentalChange = 0.2f; //Mentalilness
-    #endregion
-
-    #region Medication
 
     //Medicine Variables
     static float over, overMax = 50, overChange = 0.1f; //Overdose
@@ -109,21 +81,6 @@ public class GameManager : MonoBehaviour {
     static int strength; //1-3
     static float overD;
     static int contents = 0, contentsMax = 10; //How many pills left
-
-    #endregion
-
-    ////Test Variables
-    //public float tHunger, tThirst, tBladder, tHygiene, tPain, tOver, tTire, tSore, tIV, tBP;
-
-    ////Whether in combat, in which stats stop decreasing over time, or not.
-    //static bool inCombat = false;
-
-    ////Source Buttons
-    //public Button[] sourceButton = new Button[6];
-
-    ////Togles IV Slider
-    //bool IVActive = false, BedpanActive = false;
-    //public GameObject IVSlider, BPSlider;
 
     //Called before start
     void Awake()
@@ -143,7 +100,10 @@ public class GameManager : MonoBehaviour {
 	void Start ()
     {
 
-        //setup initial variables
+        currentTask = new List<Task>();
+        lastDiagnoseTime = 0;
+
+        //setup initial statuses
         statuses = new Status[]{
             new Status("hunger", hungerDecay),
             new Status("thirst", thirstDecay),
@@ -155,6 +115,7 @@ public class GameManager : MonoBehaviour {
             new Status("happiness", 0)
         };
 
+        //Setup initial diagnoses
         diagnoses = new Diagnosis[]{
             new Diagnosis("Bed Sores", maxBedSores, bedSoresDamagePercent, bedSoresDamage, BedSoreDecay),
             new Diagnosis("Pain", maxPain, painDamagePercent, painDamage, painDecay),
@@ -164,10 +125,6 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-    #endregion
-
-    #region Time and Variable Change
-
     // Update is called once per frame
     void Update ()
     {
@@ -176,7 +133,7 @@ public class GameManager : MonoBehaviour {
         if (player.GetComponent<Player>().playerState == Player.states.awake)
         {
             Decay(decayWhileAwake);
-        }else if (player.GetComponent<Player>().playerState == Player.states.sleep){
+        }else if (player.GetComponent<Player>().playerState == Player.states.asleep){
             Decay(decayWhileAsleep);
         }
 
@@ -194,7 +151,7 @@ public class GameManager : MonoBehaviour {
         {
 
             //If the player is asleep wake the player up.
-            if (currentTask[0].statusEffects != "tiredness" && player.GetComponent<Player>().playerState == Player.states.sleep)
+            if (currentTask[0].name != "sleep" && player.GetComponent<Player>().playerState == Player.states.asleep)
             {
 
                 player.GetComponent<Player>().playerState = Player.states.awake;
@@ -202,66 +159,98 @@ public class GameManager : MonoBehaviour {
 
             }
 
-            if (currentTask[0].atPosition())
+            if (currentTask[0].position != Player.position.Bed && !player.GetComponent<Player>().standing)
             {
 
-                if(currentTask[0].position == Player.position.empty)
-                {
-                    this.player.GetComponent<Player>().moveTo = currentTask[0].position;   
-                }
-
-                if(addValueLastTime <= Time.time)
-                {
-
-                    addValueLastTime = Time.time * waitTime;
-
-                    //Status Task
-                    if(currentTask[0].taskType == Task.type.status)
-                    {
-
-                        //If the task is to sleep and the player is in position then dim the lights and put the player to sleep.
-                        if(currentTask[0].statusEffects == "tiredness" && player.GetComponent<Player>().playerState != Player.states.sleep)
-                        {
-                            player.GetComponent<Player>().playerState = Player.states.sleep;
-                            light.GetComponent<Light>().color = new Color(0.09f, 0.07f, 0.03f, 1);
-                        }
-
-                        getStatus(currentTask[0].statusEffects).AddValue(currentTask[0].addValue);
-
-                        if (getStatus(currentTask[0].statusEffects).statusValue == 100)
-                        {
-
-                            //Wake up if they were asleep
-                            if (currentTask[0].statusEffects == "tiredness")
-                            {
-                                player.GetComponent<Player>().playerState = Player.states.awake;
-                                light.GetComponent<Light>().color = new Color(255, 244, 214);
-                            }
-
-                            currentTask.RemoveAt(0);
-                        }
-
-                    }
-                    //Diagnosis Task
-                    else
-                    {
-
-                        getDiagnosis(currentTask[0].statusEffects).AddValue(currentTask[0].addValue);
-
-                        if(getDiagnosis(currentTask[0].statusEffects).currentValue == 0)
-                        {
-                            currentTask.RemoveAt(0);
-                        }
-
-                    }
-
-                }
+                player.GetComponent<Player>().GetOutOfBed();
 
             }
             else
             {
+
+                //Set the players position to the position of the task
                 this.player.GetComponent<Player>().moveTo = currentTask[0].position;
+
+                //If the player is at the correct position for the task.
+                if (currentTask[0].atPosition())
+                {
+
+                    if (currentTask[0].position == Player.position.Bed && player.GetComponent<Player>().standing)
+                    {
+                        player.GetComponent<Player>().GetInBed();
+                    }
+                    else
+                    {
+
+                        //Commence the task on a time base increment
+                        if (addValueLastTime <= Time.time)
+                        {
+
+                            addValueLastTime = Time.time * waitTime;
+
+                            //If the task is to sleep and they're not already asleep
+                            if (currentTask[0].name == "sleep" && player.GetComponent<Player>().playerState != Player.states.asleep)
+                            {
+
+                                //Change the players state to asleep and change the lighting to asleep mode
+                                player.GetComponent<Player>().playerState = Player.states.asleep;
+                                light.GetComponent<Light>().color = new Color(0.09f, 0.07f, 0.03f, 1);
+
+                            }
+
+                            //For each status update the value
+                            for (int i = 0; i < currentTask[0].statusEffects.Count; i++)
+                            {
+
+                                if (currentTask[0].statusType(i) == Task.type.status)
+                                    getStatus(currentTask[0].statusEffects[i]).AddValue(currentTask[0].addValue[i]);
+                                else if (currentTask[i].statusType(i) == Task.type.diagnosis)
+                                    getDiagnosis(currentTask[0].statusEffects[i]).AddValue(currentTask[0].addValue[i]);
+
+                            }
+
+                            //If all the conditions have been met
+                            if (currentTask[0].taskConditions.TrueForAll(x => x.conditionMet()))
+                            {
+
+                                //If the task was to sleep
+                                if (currentTask[0].name == "sleep")
+                                {
+
+                                    //Wake up the patient and turn on the lights
+                                    player.GetComponent<Player>().playerState = Player.states.awake;
+                                    light.GetComponent<Light>().color = new Color(1, 0.95f, 0.839f, 1);
+
+                                }
+
+                                //Remove the task from the list
+                                currentTask[0].ExitTask();
+                                currentTask.RemoveAt(0);
+                                player.GetComponent<Player>().moveTo = Player.position.empty;
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
             }
+
+        }
+
+    }
+
+    public void SkipTime()
+    {
+
+        //Update every status with the decaying value * rate of decay
+        foreach (Status status in statuses)
+        {
+
+            //Add decay value as negative
+            status.AddValue(-((status.decayValue / 100) * 1000));
 
         }
 
@@ -324,358 +313,6 @@ public class GameManager : MonoBehaviour {
         throw new System.Exception("no status named: " + name);
 
     }
-
-    ////GameVariable Section:
-    //void GameVar(int timeMultiplier)//Updates all variables based on time
-    //{
-    //    //Hunger
-    //    if(full == 0) //Checks if the patient was stuffed
-    //    {
-    //        hunger += hungerChange*timeMultiplier;
-    //        if (hunger > hungerMax)
-    //        {
-    //            hunger = hungerMax;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        full -= hungerChange * timeMultiplier;
-    //        if(full < 0)
-    //        {
-    //            hunger -= full;
-    //            full = 0;
-    //        }
-    //    }
-    //    //Thirst and iv
-    //    if(ivUse && iv != 0)
-    //    {
-    //        iv -= thirstChange * timeMultiplier;
-    //        thirst -= 0.1f * timeMultiplier;
-    //        if(iv < 0)
-    //        {
-    //            thirst -= iv;
-    //            iv = 0;
-    //        }
-    //        if(thirst < 0)
-    //        {
-    //            thirst = 0;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        thirst += thirstChange * timeMultiplier;
-    //        if (thirst > thirstMax)
-    //        {
-    //            thirst = thirstMax;
-    //        }
-    //    }
-    //    //Bladder and Bedpan
-    //    if (bedpanUse && bedpan != bedpanMax)
-    //    {
-    //        bedpan += bladderChange * timeMultiplier;
-    //        bladder -= bladderChange * timeMultiplier;
-    //        if(bedpan > bedpanMax)
-    //        {
-    //            bladder -= bedpan;
-    //            bedpan = bedpanMax;
-    //        }
-    //        if(bladder < 0)
-    //        {
-    //            bladder = 0;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        bladder += bladderChange * timeMultiplier;
-    //        {
-    //            if (bladder > bladderMax)
-    //            {
-    //                bladder = bladderMax;
-    //            }
-    //        }
-    //    }
-
-    //    //Hygiene
-    //    hygiene -= hygieneChange * timeMultiplier;
-    //    if(hygiene < 0)
-    //    {
-    //        hygiene = 0;
-    //    }
-    //    //Tiredness:
-    //    if (awake)
-    //    {
-    //        tire += awakeChange * timeMultiplier;
-    //        if(tire > tireMax)
-    //        {
-    //            tire = tireMax;
-    //            awake = false;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        tire -= sleepChange * timeMultiplier;
-    //        if(tire < 0)
-    //        {
-    //            tire = 0;
-    //            awake = true;
-    //        }
-    //    }
-    //    //Bedsores
-    //    sore += soreChange * timeMultiplier;
-    //    if(sore > soreMax)
-    //    {
-    //        sore = soreMax;
-    //    }
-
-    //    //Pain
-    //    pain += painChange * timeMultiplier;
-    //    if (pain > painMax)
-    //    {
-    //        pain = painMax;
-    //    }
-    //    //Nausea
-    //    nausea -= nauseaChange * timeMultiplier;
-    //    if(nausea < 0)
-    //    {
-    //        nausea = 0;
-    //    }
-    //    //Sickness
-    //    sickness += sickChange * timeMultiplier;
-    //    if(sickness > sickMax)
-    //    {
-    //        sickness = sickMax;
-    //    }
-    //    //Mental Illness
-    //    mentalill += mentalChange;
-    //    if(mentalill > mentalMax)
-    //    {
-    //        mentalill = mentalMax;
-    //    }
-    //    //Overdose
-    //    over -= overChange * timeMultiplier;
-    //    if (over < 0)
-    //    {
-    //        over = 0;
-    //    }
-    //    //Fortify/Resistance to overdose
-    //    fortify -= fortifyChange * timeMultiplier;
-    //    if(fortify < 0)
-    //    {
-    //        fortify = 0;
-    //    }
-    //}
-
-    #endregion
-
-    //#region Methods for Influencing Stats
-
-    ////Action Methods for restoring values
-    //public void Feed(float food, float resist)//lowers the Hunger Variable
-    //{
-    //    hunger -= food;
-    //    if(hunger < 0)
-    //    {
-    //        full -= hunger; //Grows using the negative hunger amount
-    //        hunger = 0;
-    //    }
-    //    fortify += resist;
-    //}
-    //public void Drink(float water) //Lowers Thirst Variable
-    //{
-    //    thirst -= water;
-    //    if(thirst < 0)
-    //    {
-    //        thirst = 0;
-    //    }
-    //}
-    //public void RefillIV() //Returns IV to Max
-    //{
-    //    iv = ivMax;
-    //}
-    //public void Toilet() //Resets Bladder Variable
-    //{
-    //    bladder = 0;
-    //}
-    //public void EmptyBP() //Returns Bedpan to empty;
-    //{
-    //    bedpan = 0;
-    //}
-
-    //public void TakeShower(){
-    //    player.GetComponent<Player>().moveTo = Player.movement.shower;
-    //}
-
-    //public void Clean(float clean) //Raises Hygiene
-    //{
-    //    hygiene += clean;
-    //    if(hygiene > hygieneMax)
-    //    {
-    //        hygiene = hygieneMax;
-    //    }
-    //}
-    //public void ShiftPosition()
-    //{
-    //    sore -= soreShift;
-    //    if(sore < 0)
-    //    {
-    //        sore = 0;
-    //    }
-    //}
-    //public void Massage()//resets Bedsores
-    //{
-    //    sore = 0;
-    //}
-    ////Methods for toggling states
-    //public void SleepState() //Toggle awake and asleep
-    //{
-    //    awake = !awake;
-    //}
-    //public void IVToggle()
-    //{
-    //    ivUse = !ivUse;
-    //    IVActive = !IVActive;
-    //    IVSlider.SetActive(IVActive);
-    //}
-    //public void BedpanToggle()
-    //{
-    //    bedpanUse = !bedpanUse;
-
-    //    BedpanActive = !BedpanActive;
-    //    BPSlider.SetActive(BedpanActive);
-    //}
-
-    //public void Medication()
-    //{
-    //    if(medType == "Painkiller")//Pain
-    //    {
-    //        Painkiller();
-    //    }
-    //    if(medType == "")//Sickness
-    //    {
-    //        if (sick)
-    //        {
-
-    //        }
-    //        else//If not sick, bad effects increase
-    //        {
-
-    //        }
-    //    }
-    //    if (medType == "")//Nausea
-    //    {
-
-    //    }
-    //    if (medType == "")//Mental
-    //    {
-
-    //    }
-    //}
-    //public void Painkiller()//Lowers Pain, Raises Overdose
-    //{
-    //    if (contents > 0)
-    //    {
-    //        pain -= strength * 5;
-    //        float totalDose = overD - fortify;
-    //        if (totalDose < 0)
-    //        {
-    //            totalDose = 0.1f;
-    //        }
-    //        over += totalDose;
-    //        if (pain < 0)
-    //        {
-    //            pain = 0;
-    //        }
-    //        if (over > overMax)
-    //        {
-    //            over = overMax;
-    //        }
-    //    }
-    //}
-
-    //#endregion
-
-    //#region Diagnosing
-
-    ////Diagnosing Results Method
-    //public void Diagnosed(int order)
-    //{
-    //    if(order == 1)//Bedsores
-    //    {
-    //        diagnoseResults.text = "Bedsores at " + (int)sore + " out of " + soreMax;
-    //    }
-    //    if(order == 2)//Pain
-    //    {
-    //        diagnoseResults.text = "Pain at " + (int)pain + " out of " + painMax;
-    //    }
-    //    if (order == 3)//Overdose
-    //    {
-    //        diagnoseResults.text = "Drug Overdose at " + (int)over + " out of " + overMax;
-    //    }
-    //    if (order == 4)//Resistance
-    //    {
-    //        diagnoseResults.text = "Overdose Resistance at " + (int)fortify;
-    //    }
-    //    if(order == 5)//Nausea
-    //    {
-    //        diagnoseResults.text = "Nausea at " + (int)nausea + " out of " + nauseaMax;
-    //    }
-    //    if(order == 6)//Illness
-    //    {
-    //        diagnoseResults.text = "Illness at " + (int)sickness + " out of " + sickMax;
-    //    }
-    //    if(order == 7)//Mental illness
-    //    {
-    //        diagnoseResults.text = "Mental Illness at " + (int)mentalill + " out of " + mentalMax;
-    //    }
-    //}
-
-    //#endregion
-
-    //#region medicalCabinet
-    //public void FillMed(string name, int power, float od)
-    //{
-    //    medType = name;
-    //    strength = power;
-    //    overD = od;
-    //    contents = contentsMax;
-    //}
-    //#endregion
-
-    //#region Cancel Call
-    //public void Canceller(int button) //Closes all other buttons
-    //{
-    //    for(int i = 0; i < sourceButton.Length; i++)
-    //    {
-    //        if(i != button)
-    //        {
-    //            if(sourceButton[i].name == "Button_Sink")
-    //            {
-    //                sourceButton[i].GetComponent<SinkScript>().Cancel();
-    //            }
-    //            if (sourceButton[i].name == "Button_Diagnose")
-    //            {
-    //                sourceButton[i].GetComponent<DiagnoseButton>().Cancel();
-    //            }
-    //            if (sourceButton[i].name == "Button_Bed")
-    //            {
-    //                sourceButton[i].GetComponent<BedButton>().Cancel();
-    //            }
-    //            if (sourceButton[i].name == "TrayButton")
-    //            {
-    //                sourceButton[i].GetComponent<TrayButton>().Cancel();
-    //            }
-    //            if (sourceButton[i].name == "IVButton")
-    //            {
-    //                sourceButton[i].GetComponent<IVButton>().Cancel();
-    //            }
-    //            if (sourceButton[i].name == "DoorButton")
-    //            {
-    //                sourceButton[i].GetComponent<DoorButton>().Cancel();
-    //            }
-    //        }
-    //    }
-    //}
-    //#endregion
 
 }
 
@@ -758,23 +395,25 @@ public class Diagnosis {
 
 }
 
+
 public class Task{
 
     public string name;
     public Player.position position;
-    public string statusEffects;
-    public float addValue;
+    public List<string> statusEffects;
+    public float[] addValue;
     private GameObject player;
+    public List<TaskCondition> taskConditions;
+    private GameObject taskBar;
 
     public enum type
     {
+        empty,
         status,
         diagnosis
     }
 
-    public type taskType;
-
-    public Task(string name, Player.position position, string statusEffects, float addValue, GameObject player, type taskType)
+    public Task(string name, Player.position position, List<string> statusEffects, float[] addValue, GameObject player, List<TaskCondition> taskConditions)
     {
 
         this.name = name;
@@ -782,7 +421,46 @@ public class Task{
         this.statusEffects = statusEffects;
         this.player = player;
         this.addValue = addValue;
-        this.taskType = taskType;
+        this.taskConditions = taskConditions;
+
+        //Create task bar
+        GameObject clone = Resources.Load("Task") as GameObject;
+        clone.GetComponent<TaskButton>().task = this.name;
+        taskBar = Object.Instantiate(clone, GameObject.Find("UI").transform);
+        taskBar.transform.localPosition = new Vector3(-365 + GameManager.instance.currentTask.Count * 50, 165, 0);
+
+    }
+
+    public void ExitTask()
+    {
+
+        Object.Destroy(taskBar);
+
+        //Move the other buttons
+        foreach(Task task in GameManager.instance.currentTask)
+        {
+
+            task.taskBar.transform.localPosition = new Vector3(-365 + (GameManager.instance.currentTask.IndexOf(task) - 1) * 50, 165, 0);
+
+        }
+
+    }
+
+    public void CancelTask()
+    {
+
+        Object.Destroy(taskBar);
+        var testList = GameManager.instance.currentTask;
+
+        testList.Remove(this);
+
+        //Move the other buttons
+        foreach (Task task in testList)
+        {
+
+            task.taskBar.transform.localPosition = new Vector3(-365 + (GameManager.instance.currentTask.IndexOf(task)) * 50, 165, 0);
+
+        }
 
     }
 
@@ -790,7 +468,7 @@ public class Task{
     {
         if (position == Player.position.empty)
             return true;
-        if (position == this.player.GetComponent<Player>().moveTo && (this.player.GetComponent<PathFinding>().currentPath == null))
+        if (position == this.player.GetComponent<Player>().currentPosition)
             return true;
         else
         {
@@ -799,29 +477,134 @@ public class Task{
 
     }
 
+    public type statusType(int index)
+    {
+
+        var gameManager = GameManager.instance;
+
+        //Check if it's a status
+        for (int i = 0; i < gameManager.statuses.Length; i++)
+        {
+
+            if(gameManager.statuses[i].statusName == this.statusEffects[index])
+                return type.status;
+
+        }
+
+        //Check if it's a status
+        for (int i = 0; i < gameManager.diagnoses.Length; i++)
+        {
+
+            if (gameManager.diagnoses[i].diagnosisName == this.statusEffects[index])
+                return type.diagnosis;
+
+        }
+
+        throw new System.Exception("No status or Diagnosis named: " + this.statusEffects[index]);
+            
+    }
+
 }
 
+public class TaskCondition
+{
+    
+    public string conditionName;
+    private float value;
+    private Task.type type = Task.type.empty;
 
+    public enum Condition
+    {
+        full,
+        empty,
+        value
+    }
 
-//Things to implement/Consider:
-//tooFull having an affect. Lessen fitness, raise nausea.
-//Maybe have both Full decrease and Hunger Increase?
-//Bedsores only lessens when shifted, massage action added
+    public Condition condition;
 
-//Popup if content empty with medicine
+    public TaskCondition(string conditionName, Condition condition, float value)
+    {
 
-//Required Implementations:
-//Health based on variables
-//Happiness based on variables
-//Patient State and Locking Options
-//Fitness stat
-//Nausea stat
-//Sickness Stat
-//Antibiotics
-//Anti-nausea
-//
-//
-//
-//
-//
-//
+        this.conditionName = conditionName;
+        this.condition = condition;
+        this.value = value;
+
+        //Get the conditions type on initialisation
+        var gameManager = GameManager.instance;
+
+        //Check if it's a status
+        for (int i = 0; i < gameManager.statuses.Length; i++)
+        {
+
+            if (gameManager.statuses[i].statusName == conditionName)
+                this.type =  Task.type.status;
+
+        }
+
+        //Check if it's a status
+        for (int i = 0; i < gameManager.diagnoses.Length; i++)
+        {
+
+            if (gameManager.diagnoses[i].diagnosisName == conditionName)
+                this.type = Task.type.diagnosis;
+
+        }
+
+        if (this.type == Task.type.empty)
+            throw new System.Exception("No status or diagnosis called: " + conditionName);
+
+    }
+
+    public bool conditionMet()
+    {
+
+        //Depending on the set condition
+        switch(condition)
+        {
+
+            //Check if that condition is met
+            case Condition.full:
+                if(this.type == Task.type.status)
+                {
+                    if (GameManager.instance.getStatus(conditionName).statusValue >= 100)
+                        return true;
+                }
+                else if(this.type == Task.type.status)
+                {
+                    if (GameManager.instance.getDiagnosis(conditionName).currentValue >= GameManager.instance.getDiagnosis(conditionName).maxDiagnosisValue)
+                        return true;
+                }
+                break;
+
+            case Condition.empty:
+                if (this.type == Task.type.status)
+                {
+                    if (GameManager.instance.getStatus(conditionName).statusValue <= 0)
+                        return true;
+                }
+                else if (this.type == Task.type.status)
+                {
+                    if (GameManager.instance.getDiagnosis(conditionName).currentValue <= 0)
+                        return true;
+                }
+                break;
+
+            case Condition.value:
+                if (this.type == Task.type.status)
+                {
+                    if (GameManager.instance.getStatus(conditionName).statusValue == value)
+                        return true;
+                }
+                else if (this.type == Task.type.status)
+                {
+                    if (GameManager.instance.getDiagnosis(conditionName).currentValue == value)
+                        return true;
+                }
+                break;
+        }
+
+        return false;
+
+    }
+
+}

@@ -8,45 +8,55 @@ public class PathFinding : MonoBehaviour
     public float walkSpeed = 5.0f;
 
     public Stack<Vector3> currentPath;
+    public Player.position movingTo;
     public Vector3 currentWayPointPosition;
     public float moveTimeTotal;
     public float moveTimeCurrent;
 
     public void NagivateTo(Vector3 destination)
     {
+
         currentPath = new Stack<Vector3>();
+
         var currentNode = FindClosestWayPoint(transform.position);
         var endNode = FindClosestWayPoint(destination);
 
-        if (currentNode == null || endNode == null || currentNode == endNode)
+        if(currentNode == null || endNode == null || currentNode == endNode)
         {
-            return;   
+            currentPath = null;
+            return;
         }
 
-        //using A* search
-        var openList = new SortedList<float, WayPoint>();
         var closedList = new List<WayPoint>();
+        var openList = new SortedList<float, WayPoint>();
 
         openList.Add(0, currentNode);
         currentNode.previous = null;
-        currentNode.distance = 0f;
+        currentNode.distance = 0;
 
         while(openList.Count > 0)
         {
+
             currentNode = openList.Values[0];
             openList.RemoveAt(0);
+
             var dist = currentNode.distance;
             closedList.Add(currentNode);
             if (currentNode == endNode)
                 break;
+
             foreach(var neighbor in currentNode.neighbors)
             {
+
                 if (closedList.Contains(neighbor) || openList.ContainsValue(neighbor))
                     continue;
+
                 neighbor.previous = currentNode;
                 neighbor.distance = dist + (neighbor.transform.position - currentNode.transform.position).magnitude;
-                var distanceToTarget = (neighbor.transform.position - endNode.transform.position).magnitude;
-                openList.Add(neighbor.distance + distanceToTarget, neighbor);
+
+                var DistanceToTarget = (neighbor.transform.position - endNode.transform.position).magnitude;
+                openList.Add(neighbor.distance + DistanceToTarget, neighbor);
+
             }
 
         }
@@ -68,6 +78,7 @@ public class PathFinding : MonoBehaviour
         currentPath = null;
         moveTimeTotal = 0;
         moveTimeCurrent = 0;
+        GameManager.instance.player.GetComponent<Player>().toggleWalkAnimation(false);
     }
 
     // Use this for initialization
@@ -81,6 +92,9 @@ public class PathFinding : MonoBehaviour
     {
         if(currentPath != null && currentPath.Count > 0)
         {
+
+            GameManager.instance.player.GetComponent<Player>().toggleWalkAnimation(true);
+
             if(moveTimeCurrent < moveTimeTotal)
             {
                 moveTimeCurrent += Time.deltaTime;
