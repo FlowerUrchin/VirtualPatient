@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -912,7 +912,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: painkillers
-  taskImage: {fileID: 0}
+  taskImage: {fileID: 21300000, guid: 8805a75166483244b856d90ac3eb14f7, type: 3}
   taskPosition: 2
   statusEffects:
   - Pain
@@ -1149,7 +1149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: filterstomach
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 16297fc87a3619e459655367611e11aa, type: 3}
   taskPosition: 2
   statusEffects:
   - Nausea
@@ -1832,7 +1832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: drink
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: b8dc38ee0f131314a8b9eb73e28b80b9, type: 3}
   taskPosition: 2
   statusEffects:
   - thirst
@@ -2449,7 +2449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: painkillers
-  taskImage: {fileID: 0}
+  taskImage: {fileID: 21300000, guid: 8805a75166483244b856d90ac3eb14f7, type: 3}
   taskPosition: 1
   statusEffects:
   - Pain
@@ -3061,7 +3061,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: medicine
-  taskImage: {fileID: 0}
+  taskImage: {fileID: 21300000, guid: 385b2cddb8a0e2a479521c6da1b44c87, type: 3}
   taskPosition: 1
   statusEffects:
   - medicine
@@ -3355,7 +3355,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: drink
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: b8dc38ee0f131314a8b9eb73e28b80b9, type: 3}
   taskPosition: 3
   statusEffects:
   - thirst
@@ -3819,7 +3819,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: exercise
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 7dd9a92f81906b54ea72a65a87cde4e5, type: 3}
   taskPosition: 6
   statusEffects:
   - tiredness
@@ -3958,7 +3958,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1394435809938706, guid: 8424f3873794c1441a8fce1226ccbf6d, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1394435809938706, guid: 8424f3873794c1441a8fce1226ccbf6d, type: 2}
       propertyPath: m_Name
@@ -4027,7 +4027,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: medicine
-  taskImage: {fileID: 0}
+  taskImage: {fileID: 21300000, guid: 385b2cddb8a0e2a479521c6da1b44c87, type: 3}
   taskPosition: 1
   statusEffects:
   - medicine
@@ -4677,7 +4677,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: diagnose
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 07ad389f0148cca4aa72959ab2f40e60, type: 3}
   taskPosition: 0
   statusEffects: []
   statusDamage: []
@@ -5022,7 +5022,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: filterblood
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 581c9a23b58c9e946863c8c374766ba1, type: 3}
   taskPosition: 2
   statusEffects:
   - Blood Toxicity
@@ -5203,7 +5203,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1394435809938706, guid: 8424f3873794c1441a8fce1226ccbf6d, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1394435809938706, guid: 8424f3873794c1441a8fce1226ccbf6d, type: 2}
       propertyPath: m_Name
@@ -5272,7 +5272,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: painkillers
-  taskImage: {fileID: 0}
+  taskImage: {fileID: 21300000, guid: 8805a75166483244b856d90ac3eb14f7, type: 3}
   taskPosition: 1
   statusEffects:
   - Pain
@@ -5566,7 +5566,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: exercise
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 7dd9a92f81906b54ea72a65a87cde4e5, type: 3}
   taskPosition: 6
   statusEffects:
   - tiredness
@@ -5784,7 +5784,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: sleep
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: d765455812a7fa24485252ed0712803b, type: 3}
   taskPosition: 2
   statusEffects:
   - tiredness
@@ -6212,7 +6212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: medicine
-  taskImage: {fileID: 0}
+  taskImage: {fileID: 21300000, guid: 385b2cddb8a0e2a479521c6da1b44c87, type: 3}
   taskPosition: 2
   statusEffects:
   - medicine
@@ -6632,7 +6632,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: shiftposition
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 23a7be0d6e6cb164d8ce324e30f0ea27, type: 3}
   taskPosition: 2
   statusEffects:
   - Bed Sores
@@ -7467,7 +7467,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &886769178
 Transform:
   m_ObjectHideFlags: 0
@@ -7908,7 +7908,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: shower
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 97753da82af5e8945adae9e745080bb9, type: 3}
   taskPosition: 4
   statusEffects:
   - hygiene
@@ -8178,7 +8178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: filterstomach
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 16297fc87a3619e459655367611e11aa, type: 3}
   taskPosition: 2
   statusEffects:
   - Nausea
@@ -9177,7 +9177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: bedpan
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: ef837811d37cd2e4bb075ac1c402283b, type: 3}
   taskPosition: 2
   statusEffects:
   - bladder
@@ -9540,7 +9540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: sleep
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: d765455812a7fa24485252ed0712803b, type: 3}
   taskPosition: 2
   statusEffects:
   - tiredness
@@ -9999,7 +9999,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: toilet
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: e3640b9a2d210464f9f419c29dd2891c, type: 3}
   taskPosition: 4
   statusEffects:
   - bladder
@@ -11077,7 +11077,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: filterblood
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 581c9a23b58c9e946863c8c374766ba1, type: 3}
   taskPosition: 2
   statusEffects:
   - Blood Toxicity
@@ -11455,7 +11455,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: diagnose
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 07ad389f0148cca4aa72959ab2f40e60, type: 3}
   taskPosition: 0
   statusEffects: []
   statusDamage: []
@@ -11979,7 +11979,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: drink
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: b8dc38ee0f131314a8b9eb73e28b80b9, type: 3}
   taskPosition: 3
   statusEffects:
   - thirst
@@ -12320,7 +12320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: bedbath
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 0c96789b9e21f304c9f9c60c3d071199, type: 3}
   taskPosition: 2
   statusEffects:
   - hygiene
@@ -13078,7 +13078,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: Feed
-  taskImage: {fileID: 0}
+  taskImage: {fileID: 21300000, guid: b0eb445a3ed3b874ca23004f2e203174, type: 3}
   taskPosition: 1
   statusEffects:
   - hunger
@@ -13425,7 +13425,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: Feed
-  taskImage: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: b0eb445a3ed3b874ca23004f2e203174, type: 3}
   taskPosition: 2
   statusEffects:
   - hunger
@@ -14345,7 +14345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: sleep
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: d765455812a7fa24485252ed0712803b, type: 3}
   taskPosition: 2
   statusEffects:
   - tiredness
@@ -14421,9 +14421,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 5e9d3b351d8aa450eb6462d2031d776a, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 705dbaf098dc7bf47a30c8c59653c0dc, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -14704,7 +14704,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1394435809938706, guid: 8424f3873794c1441a8fce1226ccbf6d, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1394435809938706, guid: 8424f3873794c1441a8fce1226ccbf6d, type: 2}
       propertyPath: m_Name
@@ -14740,6 +14740,16 @@ Prefab:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114542423630273494, guid: 8424f3873794c1441a8fce1226ccbf6d,
+        type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 114542423630273494, guid: 8424f3873794c1441a8fce1226ccbf6d,
+        type: 2}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114255537140742468, guid: 8424f3873794c1441a8fce1226ccbf6d, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 8424f3873794c1441a8fce1226ccbf6d, type: 2}
@@ -14766,7 +14776,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: Feed
-  taskImage: {fileID: 0}
+  taskImage: {fileID: 21300000, guid: b0eb445a3ed3b874ca23004f2e203174, type: 3}
   taskPosition: 1
   statusEffects:
   - hunger
@@ -14970,7 +14980,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: filterblood
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 581c9a23b58c9e946863c8c374766ba1, type: 3}
   taskPosition: 2
   statusEffects:
   - Blood Toxicity
@@ -15205,7 +15215,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: toilet
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: e3640b9a2d210464f9f419c29dd2891c, type: 3}
   taskPosition: 4
   statusEffects:
   - bladder
@@ -15327,7 +15337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: diagnose
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 07ad389f0148cca4aa72959ab2f40e60, type: 3}
   taskPosition: 0
   statusEffects: []
   statusDamage: []
@@ -15666,7 +15676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   taskName: shower
-  taskImage: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  taskImage: {fileID: 21300000, guid: 97753da82af5e8945adae9e745080bb9, type: 3}
   taskPosition: 4
   statusEffects:
   - hygiene
