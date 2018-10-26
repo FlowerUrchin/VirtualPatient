@@ -8,6 +8,7 @@ public class StatusButtons : MonoBehaviour {
     public UnityEngine.UI.Button button { get; set; }
 
     public string taskName;
+    public Sprite taskImage;
     public Player.position taskPosition;
     public List<string> statusEffects;
     public float[] statusDamage;
@@ -35,6 +36,27 @@ public class StatusButtons : MonoBehaviour {
 
         }
 
+        if (this.taskName == "medicine")
+        {
+            switch (gameManager.player.GetComponent<Player>().patientType)
+            {
+                case Player.PatientType.ill:
+                    this.statusEffects = new List<string>() { "Illness" };
+                    this.conditionNames = new List<string>() { "Illness" };
+                    break;
+
+                case Player.PatientType.mental:
+                    this.statusEffects = new List<string>() { "MentalState" };
+                    this.conditionNames = new List<string>() { "MentalState" };
+                    break;
+
+                case Player.PatientType.phsyical:
+                    this.statusEffects = new List<string>() { "Injury" };
+                    this.conditionNames = new List<string>() { "Injury" };
+                    break;
+            }
+        }
+
     }
 
     // Update is called once per frame
@@ -45,6 +67,27 @@ public class StatusButtons : MonoBehaviour {
 
     void OnClick()
     {
+
+        if(this.taskName == "medicine")
+        {
+            switch(gameManager.player.GetComponent<Player>().patientType)
+            {
+                case Player.PatientType.ill:
+                    this.statusEffects = new List<string>(){"Illness"};
+                    this.conditionNames = new List<string>() { "Illness" };
+                    break;
+
+                case Player.PatientType.mental:
+                    this.statusEffects = new List<string>() { "MentalState" };
+                    this.conditionNames = new List<string>() { "MentalState" };
+                    break;
+
+                case Player.PatientType.phsyical:
+                    this.statusEffects = new List<string>() { "Injury" };
+                    this.conditionNames = new List<string>() { "Injury" };
+                    break;
+            }
+        }
 
         //If there isn't already 3 tasks
         if (gameManager.currentTask.Count <= 2)
@@ -59,7 +102,8 @@ public class StatusButtons : MonoBehaviour {
                                                      statusEffects,
                                                      statusDamage,
                                                      gameManager.player,
-                                                     taskConditions
+                                                     taskConditions,
+                                                     taskImage
                                                      ));
 
             }

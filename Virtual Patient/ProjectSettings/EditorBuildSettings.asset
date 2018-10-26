@@ -6,8 +6,18 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Main.unity
+    path: Assets/Scenes/MainMenu.unity
+    guid: 3d45681b7242e4f1ba9ec50d1bec5e66
+  - enabled: 1
+    path: Assets/Scenes/Main.unity
     guid: c639c5e3bb3507146ac8f7d80b54972e
   - enabled: 0
-    path: Assets/Medicine Cabinet.unity
+    path: Assets/TestScenes/Medicine Cabinet.unity
     guid: 11bfe8019ecb5f14385d7dcf485e8b85
+  - enabled: 1
+    path: Assets/Scenes/Help Scene.unity
+    guid: 48428d4846dcc47aea3fee0e59a76bbe
+  - enabled: 1
+    path: Assets/Scenes/DeathScene.unity
+    guid: 84d2141820f114562b51d827ed8a1564
+  m_configObjects: {}

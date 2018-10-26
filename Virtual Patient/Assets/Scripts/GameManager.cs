@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
 
     public static GameManager instance = null;
     public GameObject player;
-    public GameObject light;
+    public GameObject lighting;
+    public GameObject scanner;
 
     //Objects
     public Text diagnoseResults;
@@ -19,7 +22,7 @@ public class GameManager : MonoBehaviour
 
     //Status Variables
     public Status[] statuses;
-    public Diagnosis[] diagnoses;
+    public List<Diagnosis> diagnoses;
 
     //rates of decay
     public float decayWhileAwake;
@@ -27,38 +30,19 @@ public class GameManager : MonoBehaviour
     public float hungerDecay;
     public float thirstDecay;
     public float bladderDecay;
-    public float fitnessDecay;
     public float hygieneDecay;
     public float tirednessDecay;
 
     //Diagnosis variables
-    private int maxBedSores = 500;
-    private int bedSoresDamagePercent = 40;
-    private int bedSoresDamage = 10;
-    private float BedSoreDecay;
+    public float BedSoreDecay = 0.0069f;
 
-    private int maxPain = 1000;
-    private int painDamagePercent = 60;
-    private int painDamage = 20;
-    private float painDecay;
+    public float painDecay = 0.0046f;
 
-    private int maxOverDose = 1000;
-    private int overDoseDamagePercent = 60;
-    private int overDoseDamage = 30;
-    private float overDoseDecay;
+    public float bloodToxicityDecay = 0.0011f;
 
-    private int maxBloodToxicity = 1000;
-    private int bloodToxicityPercent = 80;
-    private int bloodToxicityDamage = 50;
-    private float bloodToxicityDecay;
+    public float nauseDecay = 0.0046f;
 
     public List<Task> currentTask { get; set; }
-
-    private float bedsore { get; set; }
-    private float pain { get; set; }
-    private float nausea { get; set; }
-    private float sickness { get; set; }
-    private float mentalill { get; set; }
 
     //Time Variables
     private float lastTime = 0;
@@ -68,19 +52,13 @@ public class GameManager : MonoBehaviour
 
     public float lastDiagnoseTime { get; set; }
 
-    //static float pain = 0, painMax = 50, painChange = 0.2f; //Pain
-    //static float nausea = 0, nauseaMax = 50, nauseaChange = 0.1f; //Nausea
-    //static float sickness = 0, sickMax = 50, sickChange = 0.2f; //Sickness
-    //static float mentalill = 0, mentalMax = 50, mentalChange = 0.2f; //Mentalilness
+    public bool bedSoresRemoved { get; set; }
+    public bool NauseaRemove { get; set; }
 
-    //Medicine Variables
-    static float over, overMax = 50, overChange = 0.1f; //Overdose
+    public bool Continue { get; set; }
 
-    //Medicine Bottle
-    static string medType, requiredType;
-    static int strength; //1-3
-    static float overD;
-    static int contents = 0, contentsMax = 10; //How many pills left
+    //Diagnosis animation stage
+    private float diagnosisAnimation = 0;
 
     //Called before start
     void Awake()
@@ -89,6 +67,40 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+
+            //Check if the game is a continue or not
+            if(PlayerPrefs.GetInt("Continue") == 1)
+            {
+                Continue = true;
+            }else
+            {
+                Continue = false;
+            }
+
+            //Load the correct player
+            switch (PlayerPrefs.GetInt("PatientType"))
+            {
+
+                case 0:
+                    this.player = GameObject.FindGameObjectWithTag("Patient1");
+                    GameObject.FindGameObjectWithTag("Patient2").SetActive(false);
+                    GameObject.FindGameObjectWithTag("Patient3").SetActive(false);
+                    break;
+
+                case 1:
+                    this.player = GameObject.FindGameObjectWithTag("Patient2");
+                    GameObject.FindGameObjectWithTag("Patient1").SetActive(false);
+                    GameObject.FindGameObjectWithTag("Patient3").SetActive(false);
+                    break;
+
+                case 2:
+                    this.player = GameObject.FindGameObjectWithTag("Patient3");
+                    GameObject.FindGameObjectWithTag("Patient1").SetActive(false);
+                    GameObject.FindGameObjectWithTag("Patient2").SetActive(false);
+                    break;
+
+            }
+
         }
         else if (instance == this)
         {
@@ -100,34 +112,177 @@ public class GameManager : MonoBehaviour
 	void Start ()
     {
 
+
+
+        //Bugfix for the player going spaz at the start of the game
+        player.GetComponent<Player>().currentPosition = Player.position.empty;
+        player.GetComponent<Player>().moveTo = Player.position.Bed;
+        player.transform.localEulerAngles = new Vector3(312, 180, 0);
+
         currentTask = new List<Task>();
         lastDiagnoseTime = 0;
 
-        //setup initial statuses
-        statuses = new Status[]{
-            new Status("hunger", hungerDecay),
-            new Status("thirst", thirstDecay),
-            new Status("bladder", bladderDecay),
-            new Status("fitness", fitnessDecay),
-            new Status("hygiene", hygieneDecay),
-            new Status("tiredness", tirednessDecay),
-            new Status("health", 0),
-            new Status("happiness", 0)
-        };
+            bedSoresRemoved = false;
+            player.GetComponent<Player>().Happiness = 100;
+            //setup initial statuses
+            statuses = new Status[]{
+                                    new Status("hunger", hungerDecay),
+                                    new Status("thirst", thirstDecay),
+                                    new Status("bladder", bladderDecay),
+                                    new Status("hygiene", hygieneDecay),
+                                    new Status("tiredness", tirednessDecay),
+                                    new Status("strength", 0)
+                                   };
 
-        //Setup initial diagnoses
-        diagnoses = new Diagnosis[]{
-            new Diagnosis("Bed Sores", maxBedSores, bedSoresDamagePercent, bedSoresDamage, BedSoreDecay),
-            new Diagnosis("Pain", maxPain, painDamagePercent, painDamage, painDecay),
-            new Diagnosis("Over Dose", maxOverDose, overDoseDamagePercent, overDoseDamage, overDoseDecay),
-            new Diagnosis("Blood Toxicity", maxBloodToxicity, bloodToxicityPercent, bloodToxicityPercent, bloodToxicityDecay)
-        };
+            //Set strength equal to 0;
+            getStatus("strength").statusValue = 50;
+
+            //Setup initial diagnoses
+            diagnoses = new List<Diagnosis>(){
+                                              new Diagnosis("Bed Sores", BedSoreDecay),
+                                              new Diagnosis("Pain", painDecay),
+                                              new Diagnosis("Nausea", nauseDecay),
+                                              new Diagnosis("Blood Toxicity", bloodToxicityDecay)
+                                             };
+
+            //Add the player specific issue
+            switch (player.GetComponent<Player>().patientType)
+            {
+                case Player.PatientType.phsyical:
+                    diagnoses.Add(new Diagnosis("Injury", 0.0011f));
+                    getDiagnosis("Injury").toggledDecay = true;
+                    break;
+                case Player.PatientType.mental:
+                    diagnoses.Add(new Diagnosis("MentalState", 0.0011f));
+                    getDiagnosis("MentalState").toggledDecay = true;
+                    break;
+                case Player.PatientType.ill:
+                    diagnoses.Add(new Diagnosis("Illness", 0.0011f));
+                    getDiagnosis("Illness").toggledDecay = true;
+                    break;
+            }
+
+        //If this game is a continue the set the variables
+        if(Continue)
+        {
+
+            getStatus("hunger").statusValue = PlayerPrefs.GetFloat("hungerValue");
+            getStatus("thirst").statusValue = PlayerPrefs.GetFloat("thirstValue");
+            getStatus("bladder").statusValue = PlayerPrefs.GetFloat("bladderValue");
+            getStatus("hygiene").statusValue = PlayerPrefs.GetFloat("hygieneValue");
+            getStatus("tiredness").statusValue = PlayerPrefs.GetFloat("tirednessValue");
+            getStatus("strength").statusValue = PlayerPrefs.GetFloat("Strength");
+
+            getDiagnosis("Pain").currentValue = PlayerPrefs.GetFloat("Pain");
+            getDiagnosis("Blood Toxicity").currentValue = PlayerPrefs.GetFloat("BloodToxicity");
+
+            //Setup the players evolution
+            switch(PlayerPrefs.GetInt("evolution"))
+            {
+                case 0:
+                    getDiagnosis("Nausea").currentValue = PlayerPrefs.GetFloat("Nausea");
+                    getDiagnosis("Bed Sores").currentValue = PlayerPrefs.GetFloat("BedSores");
+                    player.GetComponent<Player>().currentEvolution = Player.evolution.bad;
+                    break;
+
+                case 1:
+                    getDiagnosis("Nausea").currentValue = PlayerPrefs.GetFloat("Nausea");
+                    player.GetComponent<Player>().currentEvolution = Player.evolution.mild;
+                    break;
+
+                case 2:
+                    player.GetComponent<Player>().currentEvolution = Player.evolution.good;
+                    break;
+            }
+
+            //setup the patient type value
+            switch(PlayerPrefs.GetInt("patientType"))
+            {
+                case 0:
+                    getDiagnosis("Illness").currentValue = PlayerPrefs.GetFloat("Illness");
+                    break;
+
+                case 1:
+                    getDiagnosis("MentalState").currentValue = PlayerPrefs.GetFloat("MentalState");
+                    break;
+
+                case 2:
+                    getDiagnosis("Injury").currentValue = PlayerPrefs.GetFloat("Injury");
+                    break;
+            }
+
+        }
 
 	}
+
+    //Save data
+    private void OnApplicationQuit()
+    {
+
+        //Before the software is closed save all the variables
+        //Save the status values
+        PlayerPrefs.SetFloat("hungerValue", getStatus("hunger").statusValue);
+        PlayerPrefs.SetFloat("thirstValue", getStatus("thirst").statusValue);
+        PlayerPrefs.SetFloat("bladderValue", getStatus("bladder").statusValue);
+        PlayerPrefs.SetFloat("hygieneValue", getStatus("hygiene").statusValue);
+        PlayerPrefs.SetFloat("tirednessValue", getStatus("tiredness").statusValue);
+        PlayerPrefs.SetFloat("Strength", getStatus("strength").statusValue);
+
+        //Save the diagnosis values
+        PlayerPrefs.SetFloat("Pain", getDiagnosis("Pain").currentValue);
+        PlayerPrefs.SetFloat("BloodToxicity", getDiagnosis("Blood Toxicity").currentValue);
+
+        //Save the current players state
+        switch(player.GetComponent<Player>().currentEvolution)
+        {
+            case Player.evolution.bad:
+                PlayerPrefs.SetFloat("Nausea", getDiagnosis("Nausea").currentValue);
+                PlayerPrefs.SetFloat("BedSores", getDiagnosis("Bed Sores").currentValue);
+                PlayerPrefs.SetInt("evolution", 0);
+                break;
+
+            case Player.evolution.mild:
+                PlayerPrefs.SetFloat("Nausea", getDiagnosis("Nausea").currentValue);
+                PlayerPrefs.SetInt("evolution", 1);
+                break;
+
+            case Player.evolution.good:
+                PlayerPrefs.SetInt("evolution", 2);
+                break;
+        }
+
+        switch(player.GetComponent<Player>().patientType)
+        {
+            case Player.PatientType.ill:
+                PlayerPrefs.SetInt("patientType", 0);
+                PlayerPrefs.SetFloat("Illness", getDiagnosis("Illness").currentValue);
+                break;
+
+            case Player.PatientType.mental:
+                PlayerPrefs.SetInt("patientType", 1);
+                PlayerPrefs.SetFloat("MentalState", getDiagnosis("MentalState").currentValue);
+                break;
+
+            case Player.PatientType.phsyical:
+                PlayerPrefs.SetInt("patientType", 2);
+                PlayerPrefs.SetFloat("Injury", getDiagnosis("Injury").currentValue);
+                break;
+        }
+
+        //Set this to a continue game
+        PlayerPrefs.SetInt("Continue", 1);
+
+    }
 
     // Update is called once per frame
     void Update ()
     {
+
+        //Determine if diagnosises should be enabled or not
+        DiagnosisConditions();
+
+        //Evolution Check
+        EvolutionCondition();
 
         //update depending where the player is
         if (player.GetComponent<Player>().playerState == Player.states.awake)
@@ -139,7 +294,6 @@ public class GameManager : MonoBehaviour
 
         //Task system
         TaskSystem();
-
 
 	}
 
@@ -155,7 +309,7 @@ public class GameManager : MonoBehaviour
             {
 
                 player.GetComponent<Player>().playerState = Player.states.awake;
-                light.GetComponent<Light>().color = new Color(1, 0.95f, 0.839f, 1);
+                lighting.GetComponent<Light>().color = new Color(1, 0.95f, 0.839f, 1);
 
             }
 
@@ -175,6 +329,13 @@ public class GameManager : MonoBehaviour
                 if (currentTask[0].atPosition())
                 {
 
+                    //If the current task is to excersie then continue the walking animation
+                    if (currentTask[0].name == "exercise")
+                    {
+                        if (!player.GetComponent<Player>().walking)
+                            player.GetComponent<Player>().toggleWalkAnimation(true);
+                    }
+
                     if (currentTask[0].position == Player.position.Bed && player.GetComponent<Player>().standing)
                     {
                         player.GetComponent<Player>().GetInBed();
@@ -182,11 +343,19 @@ public class GameManager : MonoBehaviour
                     else
                     {
 
+                        //If the player is at the door then make them invisible
+                        if(currentTask[0].position == Player.position.Door)
+                        {
+
+                            player.transform.localScale = Vector3.zero;
+
+                        }
+
                         //Commence the task on a time base increment
                         if (addValueLastTime <= Time.time)
                         {
 
-                            addValueLastTime = Time.time * waitTime;
+                            addValueLastTime = Time.time + waitTime;
 
                             //If the task is to sleep and they're not already asleep
                             if (currentTask[0].name == "sleep" && player.GetComponent<Player>().playerState != Player.states.asleep)
@@ -194,39 +363,63 @@ public class GameManager : MonoBehaviour
 
                                 //Change the players state to asleep and change the lighting to asleep mode
                                 player.GetComponent<Player>().playerState = Player.states.asleep;
-                                light.GetComponent<Light>().color = new Color(0.09f, 0.07f, 0.03f, 1);
+                                lighting.GetComponent<Light>().color = new Color(0.09f, 0.07f, 0.03f, 1);
 
                             }
 
-                            //For each status update the value
-                            for (int i = 0; i < currentTask[0].statusEffects.Count; i++)
+                            if (currentTask[0].name == "diagnose")
                             {
+                                //Diagnose the patient
+                                if(scanner.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+                                {
+                                    scanner.GetComponent<Animator>().Play("MoveArm");
+                                }
 
-                                if (currentTask[0].statusType(i) == Task.type.status)
-                                    getStatus(currentTask[0].statusEffects[i]).AddValue(currentTask[0].addValue[i]);
-                                else if (currentTask[i].statusType(i) == Task.type.diagnosis)
-                                    getDiagnosis(currentTask[0].statusEffects[i]).AddValue(currentTask[0].addValue[i]);
+                                if(scanner.GetComponent<Animator>().GetAnimatorTransitionInfo(0).IsName("MoveArm -> Exit"))
+                                {
+                                    //Remove the task from the list
+                                    diagnosisAnimation = 0;
+                                    lastDiagnoseTime = Time.deltaTime;
+                                    currentTask[0].ExitTask();
+                                    currentTask.RemoveAt(0);
+                                    player.GetComponent<Player>().moveTo = Player.position.empty;
+                                }
 
                             }
-
-                            //If all the conditions have been met
-                            if (currentTask[0].taskConditions.TrueForAll(x => x.conditionMet()))
+                            else
                             {
 
-                                //If the task was to sleep
-                                if (currentTask[0].name == "sleep")
+                                //For each status update the value
+                                for (int i = 0; i < currentTask[0].statusEffects.Count; i++)
                                 {
 
-                                    //Wake up the patient and turn on the lights
-                                    player.GetComponent<Player>().playerState = Player.states.awake;
-                                    light.GetComponent<Light>().color = new Color(1, 0.95f, 0.839f, 1);
+                                    if (currentTask[0].statusType(i) == Task.type.status)
+                                        getStatus(currentTask[0].statusEffects[i]).AddValue(currentTask[0].addValue[i]);
+                                    else if (currentTask[i].statusType(i) == Task.type.diagnosis)
+                                        getDiagnosis(currentTask[0].statusEffects[i]).AddValue(currentTask[0].addValue[i]);
 
                                 }
 
-                                //Remove the task from the list
-                                currentTask[0].ExitTask();
-                                currentTask.RemoveAt(0);
-                                player.GetComponent<Player>().moveTo = Player.position.empty;
+                                //If all the conditions have been met
+                                if (currentTask[0].taskConditions.TrueForAll(x => x.conditionMet()))
+                                {
+
+                                    //If the task was to sleep
+                                    if (currentTask[0].name == "sleep")
+                                    {
+
+                                        //Wake up the patient and turn on the lights
+                                        player.GetComponent<Player>().playerState = Player.states.awake;
+                                        lighting.GetComponent<Light>().color = new Color(1, 0.95f, 0.839f, 1);
+
+                                    }
+
+                                    //Remove the task from the list
+                                    currentTask[0].ExitTask();
+                                    currentTask.RemoveAt(0);
+                                    player.GetComponent<Player>().moveTo = Player.position.empty;
+
+                                }
 
                             }
 
@@ -235,6 +428,57 @@ public class GameManager : MonoBehaviour
                     }
 
                 }
+                else
+                {
+
+                    //If the player is invisible then make them visible
+                    if (player.GetComponent<Player>().currentPosition != Player.position.Door && currentTask[0].position != Player.position.Door && player.transform.localScale == Vector3.zero)
+                    {
+                        player.transform.localScale = new Vector3(1, 1, 1);
+                    }
+
+                }
+
+            }
+
+        }
+        else
+        {
+
+            //If the player is invisible then make them visible
+            if(player.transform.localScale == Vector3.zero)
+            {
+                player.transform.localScale = new Vector3(1,1,1);
+            }
+
+        }
+
+    }
+
+    //This method checks to determine whether the player should evolve or not
+    public void EvolutionCondition()
+    {
+
+        //Check if the player should evolve
+        if(getStatus("strength").statusValue >= 100)
+        {
+            getStatus("strength").statusValue = 50;
+            //ensure the player cannot go above good.
+            if(player.GetComponent<Player>().currentEvolution != Player.evolution.good)
+                player.GetComponent<Player>().currentEvolution += 1;
+        }
+        //Check if the player should devolve
+        else if(getStatus("strength").statusValue <= 0)
+        {
+            getStatus("strength").statusValue = 50;
+            //Check if the player should die
+            if (player.GetComponent<Player>().currentEvolution != Player.evolution.bad)
+                player.GetComponent<Player>().currentEvolution -= 1;
+            else
+            {
+
+                PlayerPrefs.SetInt("Continue", 0);
+                SceneManager.LoadScene(3, LoadSceneMode.Single);
 
             }
 
@@ -242,6 +486,7 @@ public class GameManager : MonoBehaviour
 
     }
 
+    //Skips forward in time
     public void SkipTime()
     {
 
@@ -250,8 +495,74 @@ public class GameManager : MonoBehaviour
         {
 
             //Add decay value as negative
-            status.AddValue(-((status.decayValue / 100) * 1000));
+            status.AddValue(-((status.decayValue) * 6000));
 
+        }
+
+        foreach (Diagnosis diag in diagnoses)
+        {
+
+            //Add decay value as negative
+            diag.AddValue(-((diag.decayValue) * 6000));
+
+        }
+
+    }
+
+    //toggles diagnosis conditions
+    void DiagnosisConditions()
+    {
+
+        //If the player is currently in the first state then the bedsores diagnosis is toggled
+        if (player.GetComponent<Player>().currentEvolution == Player.evolution.bad)
+        {
+
+            //Make sure it exists
+            if(diagnoses.Any(x => x.diagnosisName == "Bed Sores") == false)
+            {
+                diagnoses.Add(new Diagnosis("Bed Sores", BedSoreDecay));
+                bedSoresRemoved = false;
+            }
+
+            //If the player is in bed
+            if(player.GetComponent<Player>().currentPosition == Player.position.Bed)
+            {
+                getDiagnosis("Bed Sores").toggledDecay = true;  
+            }else
+            {
+                getDiagnosis("Bed Sores").toggledDecay = false;
+            }
+        }
+        else
+        {
+
+            if(!bedSoresRemoved)
+            {
+                //The player has evolved so you don't have to deal with bed sores anymore.
+                bedSoresRemoved = true;
+                diagnoses.Remove(getDiagnosis("Bed Sores"));
+            }
+
+        }
+
+        //If the player is currently in the first state then the bedsores diagnosis is toggled
+        if (player.GetComponent<Player>().currentEvolution == Player.evolution.good)
+        {
+            if (!NauseaRemove)
+            {
+                //The player has evolved so you don't have to deal with bed sores anymore.
+                NauseaRemove = true;
+                diagnoses.Remove(getDiagnosis("Nausea"));
+            }
+        }
+        else
+        {
+            //Make sure it exists
+            if (diagnoses.Any(x => x.diagnosisName == "Nausea") == false)
+            {
+                diagnoses.Add(new Diagnosis("Nausea", nauseDecay));
+                NauseaRemove = false;
+            }
         }
 
     }
@@ -259,33 +570,84 @@ public class GameManager : MonoBehaviour
     //Decaying Variables
     void Decay(float rateOfDecay){
 
+        //Debug.Log(player.GetComponent<Player>().Happiness);
+        //Debug.Log(getDiagnosis("Bed Sores").currentValue);
+
         //Every second
         if(lastTime <= Time.time){
 
-            lastTime = Time.time * waitTime;
+            lastTime = Time.time + waitTime;
 
             //Update every status with the decaying value * rate of decay
             foreach (Status status in statuses)
             {
 
+                //If the status is - then decrease the players happiness
+                if(status.statusValue <= 30 && status.statusValue > 0)
+                {
+                    //Ensure happiness doesn't get less than 0
+                    if (player.GetComponent<Player>().Happiness - 0.01f <= 0)
+                        player.GetComponent<Player>().Happiness = 0;
+                    else
+                        player.GetComponent<Player>().Happiness -= 0.01f;
+                }
+                else if(status.statusValue <= 0)
+                {
+                    //Ensure happiness doesn't get less than 0
+                    if (player.GetComponent<Player>().Happiness - 0.1f <= 0)
+                        player.GetComponent<Player>().Happiness = 0;
+                    else
+                        player.GetComponent<Player>().Happiness -= 0.1f;
+                }
+
                 //Add decay value as negative
-                status.AddValue(-((status.decayValue / 100) * rateOfDecay));
+                status.AddValue(-((status.decayValue) * rateOfDecay));
 
             }
 
             foreach (Diagnosis diagnosis in diagnoses)
             {
                 
-                if (diagnosis.currentValue > diagnosis.takeDamagePercent)
+                //If the diagnosis is toggled
+                if(diagnosis.toggledDecay)
                 {
 
-                    this.getStatus("health").AddValue(-diagnosis.damage);
+                    //If the diagnosis is at 30% then decrease happiness
+                    if (diagnosis.currentValue <= 0 || (diagnosis.currentValue) < 30)
+                    {
+
+                        //Ensure happiness doesn't get less than 0
+                        if (player.GetComponent<Player>().Happiness - 0.01f <= 0)
+                            player.GetComponent<Player>().Happiness = 0;
+                        else
+                            player.GetComponent<Player>().Happiness -= 0.01f;
+
+                    }
+
+                    //Decay value
+                    diagnosis.AddValue(-((diagnosis.decayValue) * rateOfDecay));
+
+                    Debug.Log(diagnosis.diagnosisName + ":" + diagnosis.currentValue);
 
                 }
 
-                diagnosis.AddValue(((diagnosis.decayValue / 100) * rateOfDecay));
-
             }
+
+            //If all the diagnoses are above 30% then increase happiness instead
+            if(diagnoses.All(x => (x.currentValue) > 30))
+            {
+                //Ensure happiness doesn't get greater than 100
+                if (player.GetComponent<Player>().Happiness + 0.01f >= 100)
+                    player.GetComponent<Player>().Happiness = 100;
+                else
+                    player.GetComponent<Player>().Happiness += 0.005f;
+            }
+
+            //Increase strength based on happiness
+            if (player.GetComponent<Player>().Happiness >= 75)
+                getStatus("strength").AddValue(0.01f);
+            else if (player.GetComponent<Player>().Happiness <= 25)
+                getStatus("strength").AddValue(-0.01f);
 
         }
 
@@ -360,28 +722,24 @@ public class Status{
 public class Diagnosis {
 
     public string diagnosisName;
-    public int maxDiagnosisValue;
-    public int takeDamagePercent;
-    public int damage;
     public float currentValue;
     public float decayValue;
+    public bool toggledDecay;
 
-    public Diagnosis(string diagnosisName, int maxDiagnosisValue, int takeDamagePercent, int damage, float decayValue){
+    public Diagnosis(string diagnosisName, float decayValue){
 
         this.diagnosisName = diagnosisName;
-        this.maxDiagnosisValue = maxDiagnosisValue;
-        this.takeDamagePercent = takeDamagePercent;
-        this.damage = damage;
-        this.currentValue = 0;
         this.decayValue = decayValue;
+        this.toggledDecay = true;
+        this.currentValue = 100;
 
     }
 
     public void AddValue(float value){
-        
-        if (currentValue + value > maxDiagnosisValue)
+
+        if (currentValue + value > 100)
         {
-            currentValue = maxDiagnosisValue;
+            currentValue = 100;
         }
         else if (currentValue + value < 0)
         {
@@ -413,7 +771,7 @@ public class Task{
         diagnosis
     }
 
-    public Task(string name, Player.position position, List<string> statusEffects, float[] addValue, GameObject player, List<TaskCondition> taskConditions)
+    public Task(string name, Player.position position, List<string> statusEffects, float[] addValue, GameObject player, List<TaskCondition> taskConditions, Sprite image)
     {
 
         this.name = name;
@@ -426,6 +784,7 @@ public class Task{
         //Create task bar
         GameObject clone = Resources.Load("Task") as GameObject;
         clone.GetComponent<TaskButton>().task = this.name;
+        clone.GetComponent<Image>().sprite = image;
         taskBar = Object.Instantiate(clone, GameObject.Find("UI").transform);
         taskBar.transform.localPosition = new Vector3(-365 + GameManager.instance.currentTask.Count * 50, 165, 0);
 
@@ -435,6 +794,8 @@ public class Task{
     {
 
         Object.Destroy(taskBar);
+
+        GameManager.instance.player.GetComponent<Player>().toggleWalkAnimation(false);
 
         //Move the other buttons
         foreach(Task task in GameManager.instance.currentTask)
@@ -451,6 +812,13 @@ public class Task{
 
         Object.Destroy(taskBar);
         var testList = GameManager.instance.currentTask;
+
+        GameManager.instance.player.GetComponent<Player>().toggleWalkAnimation(false);
+
+        if(this.position == Player.position.Door && GameManager.instance.player.transform.localScale == Vector3.zero)
+        {
+            player.transform.localScale = new Vector3(1, 1, 1);
+        }
 
         testList.Remove(this);
 
@@ -482,6 +850,9 @@ public class Task{
 
         var gameManager = GameManager.instance;
 
+        if (this.name == "medicine")
+            return type.diagnosis;
+
         //Check if it's a status
         for (int i = 0; i < gameManager.statuses.Length; i++)
         {
@@ -492,7 +863,7 @@ public class Task{
         }
 
         //Check if it's a status
-        for (int i = 0; i < gameManager.diagnoses.Length; i++)
+        for (int i = 0; i < gameManager.diagnoses.Count; i++)
         {
 
             if (gameManager.diagnoses[i].diagnosisName == this.statusEffects[index])
@@ -517,7 +888,8 @@ public class TaskCondition
     {
         full,
         empty,
-        value
+        value,
+        instant
     }
 
     public Condition condition;
@@ -537,26 +909,29 @@ public class TaskCondition
         {
 
             if (gameManager.statuses[i].statusName == conditionName)
-                this.type =  Task.type.status;
+                type =  Task.type.status;
 
         }
 
         //Check if it's a status
-        for (int i = 0; i < gameManager.diagnoses.Length; i++)
+        for (int i = 0; i < gameManager.diagnoses.Count; i++)
         {
 
             if (gameManager.diagnoses[i].diagnosisName == conditionName)
-                this.type = Task.type.diagnosis;
+                type = Task.type.diagnosis;
 
         }
 
-        if (this.type == Task.type.empty)
+        if (type == Task.type.empty)
             throw new System.Exception("No status or diagnosis called: " + conditionName);
 
     }
 
     public bool conditionMet()
     {
+
+        if (condition == Condition.instant)
+            return true;
 
         //Depending on the set condition
         switch(condition)
@@ -569,9 +944,9 @@ public class TaskCondition
                     if (GameManager.instance.getStatus(conditionName).statusValue >= 100)
                         return true;
                 }
-                else if(this.type == Task.type.status)
+                else if(this.type == Task.type.diagnosis)
                 {
-                    if (GameManager.instance.getDiagnosis(conditionName).currentValue >= GameManager.instance.getDiagnosis(conditionName).maxDiagnosisValue)
+                    if (GameManager.instance.getDiagnosis(conditionName).currentValue >= 100)
                         return true;
                 }
                 break;
@@ -582,7 +957,7 @@ public class TaskCondition
                     if (GameManager.instance.getStatus(conditionName).statusValue <= 0)
                         return true;
                 }
-                else if (this.type == Task.type.status)
+                else if (this.type == Task.type.diagnosis)
                 {
                     if (GameManager.instance.getDiagnosis(conditionName).currentValue <= 0)
                         return true;
@@ -595,12 +970,13 @@ public class TaskCondition
                     if (GameManager.instance.getStatus(conditionName).statusValue == value)
                         return true;
                 }
-                else if (this.type == Task.type.status)
+                else if (this.type == Task.type.diagnosis)
                 {
                     if (GameManager.instance.getDiagnosis(conditionName).currentValue == value)
                         return true;
                 }
                 break;
+                              
         }
 
         return false;

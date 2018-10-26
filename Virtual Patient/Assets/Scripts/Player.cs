@@ -12,6 +12,7 @@ public class Player : MonoBehaviour {
         Sink,
         Door,
         Middle,
+        Treadmill,
         empty
     };
 
@@ -28,6 +29,14 @@ public class Player : MonoBehaviour {
         fighting
     }
 
+    public enum PatientType
+    {
+        phsyical,
+        mental,
+        ill
+    }
+
+    public PatientType patientType;
     public states playerState;
 
     public position moveTo;
@@ -39,6 +48,8 @@ public class Player : MonoBehaviour {
     public GameObject wayPointsParent;
     public GameObject bed;
 
+    public float Happiness { get; set; }
+
     private List<Transform> wayPoints;
 
     private int walkingSpeed = 100;
@@ -46,7 +57,8 @@ public class Player : MonoBehaviour {
 
     //animaton variables;
     public bool standing = false;
-    public bool actionCompleted = false;
+    public bool halfStanding = false;
+    public bool walking = false;
 
     //Bed animations
     private enum GetinBedAnimation
@@ -71,13 +83,22 @@ public class Player : MonoBehaviour {
     private GetOutBedAnimation getOutBedAnimation;
     private float animationSpeed = 5.0f;
 
-
 	// Use this for initialization
 	void Start () {
 
-        playerState = states.awake;
-        currentEvolution = evolution.bad;
-        moveTo = position.empty;
+        if(GameManager.instance.Continue)
+        {
+            
+        }
+        else
+        {
+         
+            playerState = states.awake;
+            currentEvolution = evolution.bad;
+            moveTo = position.empty;
+
+        }
+
         wayPoints = new List<Transform>();
 
         foreach (Transform child in wayPointsParent.transform)
@@ -139,6 +160,13 @@ public class Player : MonoBehaviour {
                         this.GetComponent<PathFinding>().NagivateTo(wayPoints.Find(x => x.gameObject.name == "SinkWP").transform.position);
                     }
                     break;
+                case position.Treadmill:
+                    if (this.GetComponent<PathFinding>().movingTo != moveTo)
+                    {
+                        this.GetComponent<PathFinding>().movingTo = moveTo;
+                        this.GetComponent<PathFinding>().NagivateTo(wayPoints.Find(x => x.gameObject.name == "TreadmillWP").transform.position);
+                    }
+                    break;
                 case position.empty:
                     if (this.GetComponent<PathFinding>().movingTo != moveTo)
                     {
@@ -150,98 +178,133 @@ public class Player : MonoBehaviour {
         }
 
         if (this.GetComponent<PathFinding>().movingTo == moveTo && this.GetComponent<PathFinding>().currentPath == null)
+        {
             currentPosition = moveTo;
+        }
 
 	}
 
     public void GetOutOfBed()
     {
 
-        //Perform animation to get out of bed
-        switch (getOutBedAnimation)
+        Vector3 lookAt = new Vector3();
+
+        switch(getOutBedAnimation)
         {
+
+            //Stage 1
             case GetOutBedAnimation.StandUp:
+                //Make sure the player isn't walking
+                toggleWalkAnimation(false);
+                //Rotate the player so that they're standing up.
                 if (player.transform.rotation.eulerAngles.x > 1 && player.transform.rotation.eulerAngles.x < 359)
                 {
+                    //The player has executed the standing procedure
+                    halfStanding = true;
                     player.transform.Rotate(-5.0f * Time.deltaTime * animationSpeed, 0.0f, 0.0f, Space.World);
+
+                    getinBedAnimation = GetinBedAnimation.LieDown;
+
                 }
                 else
                 {
 
+                    //The player is not standing up
                     float y = player.transform.eulerAngles.y;
                     float z = player.transform.eulerAngles.z;
 
                     player.transform.eulerAngles = new Vector3(0, y, z);
                     getOutBedAnimation = GetOutBedAnimation.MoveDown;
+                    getinBedAnimation = GetinBedAnimation.LieDown;
 
                 }
                 break;
 
+                //Stage 2
             case GetOutBedAnimation.MoveDown:
+                //Make sure the player isn't walking
+                toggleWalkAnimation(false);
+
+                //Move the bed down
                 if (bed.transform.position.y > -63.1)
                 {
-                    bed.transform.position = (new Vector3(bed.transform.position.x, (bed.transform.position.y + (-10 * Time.deltaTime)), bed.transform.position.z));   
+                    getinBedAnimation = GetinBedAnimation.GoUp;
+                    halfStanding = true;
+                    bed.transform.position = (new Vector3(bed.transform.position.x, (bed.transform.position.y + (-30 * Time.deltaTime)), bed.transform.position.z));
                 }
                 else
                 {
                     bed.transform.position = new Vector3(bed.transform.position.x, -63.1f, bed.transform.position.z);
                 }
 
+                //Move the player down
                 if (player.transform.position.y > 0)
-                    player.transform.Translate(new Vector3(0, -10 * Time.deltaTime, 0), Space.World);
+                {
+                    getinBedAnimation = GetinBedAnimation.GoUp;
+                    halfStanding = true;
+                    player.transform.Translate(new Vector3(0, -30 * Time.deltaTime, 0), Space.World);
+                }
                 else
                 {
                     player.transform.localPosition = new Vector3(-330, 0, -25);
                 }
 
-                if((bed.transform.position.y >= -63.1f && bed.transform.position.y <= -63.1f) && (player.transform.position.y >= 0 && player.transform.position.y <= 0))
+                if ((bed.transform.position.y >= -63.1f && bed.transform.position.y <= -63.1f) && (player.transform.position.y >= 0 && player.transform.position.y <= 0))
                 {
-                    getOutBedAnimation = GetOutBedAnimation.FaceRight;
-                    toggleWalkAnimation(true);
-                }
-
-                break;
-
-            case GetOutBedAnimation.FaceRight:
-                if (player.transform.rotation.eulerAngles.y > 90)
-                    player.transform.Rotate(0.0f, -10.0f * Time.deltaTime * animationSpeed, 0.0f, Space.World);
-                else
-                {
-
-                    float x = player.transform.eulerAngles.x;
-                    float z = player.transform.eulerAngles.z;
-
-                    player.transform.eulerAngles = new Vector3(x, 90, z);
+                    getinBedAnimation = GetinBedAnimation.GoUp;
                     getOutBedAnimation = GetOutBedAnimation.Move;
-
                 }
+
                 break;
 
             case GetOutBedAnimation.Move:
-                if (player.transform.position.x < -210)
-                    player.transform.Translate(new Vector3(10 * Time.deltaTime * animationSpeed, 0, 0), Space.World);
-                else
+                //Toggle walking animation
+                toggleWalkAnimation(true);
+
+                //MoveTowards
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(-210, 0, -25), walkingSpeed * Time.deltaTime);
+
+                //Look at the position to walk to
+                lookAt = new Vector3(-200, 0, -25) - transform.position;
+                lookAt.y = 0;
+                if (Vector3.Angle(transform.forward, new Vector3(-200, 0, -25) - new Vector3(transform.position.x, 0, transform.position.y)) > 1f)
                 {
-                    player.transform.localPosition = new Vector3(-210, 0, -25);
+                    getinBedAnimation = GetinBedAnimation.Move;
+                    halfStanding = true;
+                    var lookRotation = Quaternion.LookRotation(lookAt);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5 * Time.deltaTime);
+                }
+
+                //If i've reached the position
+                if (transform.localPosition.x == -210f && transform.localPosition.z == -25f)
+                {
+                    getinBedAnimation = GetinBedAnimation.Move;
                     getOutBedAnimation = GetOutBedAnimation.FaceScreen;
                 }
                 break;
 
             case GetOutBedAnimation.FaceScreen:
-                //First rotate to look at the bed
-                if (player.transform.rotation.eulerAngles.y < 180)
-                    player.transform.Rotate(0.0f, 10.0f * Time.deltaTime * animationSpeed, 0.0f, Space.World);
+                //Toggle walking animation
+                toggleWalkAnimation(true);
+
+                //Look at the position to walk to
+                lookAt = new Vector3(-210, 0, -100) - this.transform.position;
+                lookAt.y = 0;
+
+                if (Vector3.Angle(transform.forward, new Vector3(-210, 0, -100) - new Vector3(transform.position.x, 0, transform.position.y)) > 1f)
+                {
+                    halfStanding = true;
+                    getinBedAnimation = GetinBedAnimation.Move;
+                    var lookRotation = Quaternion.LookRotation(lookAt);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5 * Time.deltaTime);
+                }
+                //Looking towards the screen
                 else
                 {
-
-                    float x = player.transform.eulerAngles.x;
-                    float z = player.transform.eulerAngles.z;
-
-                    player.transform.eulerAngles = new Vector3(x, 180, z);
-                    getOutBedAnimation = GetOutBedAnimation.StandUp;
+                    getinBedAnimation = GetinBedAnimation.Move;
                     toggleWalkAnimation(false);
                     standing = true;
-
+                    halfStanding = false;
                 }
                 break;
 
@@ -253,58 +316,70 @@ public class Player : MonoBehaviour {
     public void GetInBed()
     {
 
-        //Perform animation to get into bed
+        Vector3 lookAt = Vector3.zero;
+
         switch(getinBedAnimation)
         {
-            case GetinBedAnimation.FaceBed:
-                //First rotate to look at the bed
-                if (player.transform.rotation.eulerAngles.y < 270)
-                {
-                    toggleWalkAnimation(true);
-                    player.transform.Rotate(0.0f, 10.0f * Time.deltaTime * animationSpeed, 0.0f, Space.World);
-                }
-                else
-                {
-
-                    float x = player.transform.eulerAngles.x;
-                    float z = player.transform.eulerAngles.z;
-
-                    player.transform.eulerAngles = new Vector3(x, 270, z);
-                    getinBedAnimation = GetinBedAnimation.Move;
-
-                }
-                break;
-
+            //Stage 1
             case GetinBedAnimation.Move:
-                if (player.transform.position.x > -330)
-                    player.transform.Translate(new Vector3(-10 * Time.deltaTime * animationSpeed,0,0), Space.World);
-                else
+                //Toggle walking animation
+                toggleWalkAnimation(true);
+
+                //MoveTowards
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(-330, 0, -25), walkingSpeed * Time.deltaTime);
+
+                //Look at the position to walk to
+                lookAt = new Vector3(-340, 0, -25) - transform.position;
+                lookAt.y = 0;
+                if (Vector3.Angle(transform.forward, new Vector3(-340, 0, -25) - new Vector3(transform.position.x, 0, transform.position.y)) > 1f)
                 {
-                    player.transform.localPosition = new Vector3(-330, 0, -25);
+                    halfStanding = true;
+                    getOutBedAnimation = GetOutBedAnimation.Move;
+                    var lookRotation = Quaternion.LookRotation(lookAt);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5 * Time.deltaTime);
+                }
+
+                //If i've reached the position
+                if(transform.localPosition.x == -330f && transform.localPosition.z == -25f)
+                {
+                    getOutBedAnimation = GetOutBedAnimation.Move;
                     getinBedAnimation = GetinBedAnimation.FaceScreen;
                 }
                 break;
 
+                //Stage 2
             case GetinBedAnimation.FaceScreen:
-                if (player.transform.rotation.eulerAngles.y > 180)
-                    player.transform.Rotate(0.0f, -10.0f * Time.deltaTime * animationSpeed, 0.0f, Space.World);
+                //Toggle walking animation
+                toggleWalkAnimation(true);
+
+                //Look at the position to walk to
+                lookAt = new Vector3(-330, 0, -100) - transform.position;
+                lookAt.y = 0;
+                if (Vector3.Angle(transform.forward, new Vector3(-330, 0, -100) - new Vector3(transform.position.x, 0, transform.position.y)) > 1f)
+                {
+                    halfStanding = true;
+                    getOutBedAnimation = GetOutBedAnimation.Move;
+                    var lookRotation = Quaternion.LookRotation(lookAt);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5 * Time.deltaTime);
+                }
+                //Looking towards the screen
                 else
                 {
-
-                    float x = player.transform.eulerAngles.x;
-                    float z = player.transform.eulerAngles.z;
-
-                    player.transform.eulerAngles = new Vector3(x, 180, z);
+                    getOutBedAnimation = GetOutBedAnimation.Move;
                     getinBedAnimation = GetinBedAnimation.GoUp;
-                    toggleWalkAnimation(false);
-
                 }
                 break;
 
+                //Stage 3
             case GetinBedAnimation.GoUp:
+                //Make sure the player isn't walking
+                toggleWalkAnimation(false);
+
                 if (bed.transform.position.y < -14)
                 {
-                    bed.transform.position = (new Vector3(bed.transform.position.x, (bed.transform.position.y + (10 * Time.deltaTime)), bed.transform.position.z));
+                    getOutBedAnimation = GetOutBedAnimation.MoveDown;
+                    halfStanding = true;
+                    bed.transform.position = (new Vector3(bed.transform.position.x, (bed.transform.position.y + (30 * Time.deltaTime)), bed.transform.position.z));
                 }
                 else
                 {
@@ -312,27 +387,34 @@ public class Player : MonoBehaviour {
                 }
 
                 if (player.transform.position.y < 50)
-                    player.transform.Translate(new Vector3(0, 10 * Time.deltaTime, 0), Space.World);
+                {
+                    getOutBedAnimation = GetOutBedAnimation.MoveDown;
+                    halfStanding = true;
+                    player.transform.Translate(new Vector3(0, 30 * Time.deltaTime, 0), Space.World);
+
+                }
                 else
                 {
                     player.transform.localPosition = new Vector3(-330, 50, -25);
                 }
 
-                //if (player.transform.position.y == 50)
-                //    Debug.Log("Player Done");
-
-                //if (bed.transform.position.y < -13.0f && bed.transform.position.y > -13.2f)
-                    //Debug.Log("Bed Done");
-
                 if ((bed.transform.position.y < -13.0f && bed.transform.position.y > -13.2f) && (player.transform.position.y <= 50 && player.transform.position.y >= 50))
                 {
+                    getOutBedAnimation = GetOutBedAnimation.MoveDown;
                     getinBedAnimation = GetinBedAnimation.LieDown;
                 }
-                break;
 
+                break;
+            
+                //Stage 4
             case GetinBedAnimation.LieDown:
+                //Make sure the player isn't walking
+                toggleWalkAnimation(false);
+
                 if (player.transform.rotation.eulerAngles.x > 313 || player.transform.rotation.eulerAngles.x < 311)
                 {
+                    halfStanding = true;
+                    getOutBedAnimation = GetOutBedAnimation.StandUp;
                     player.transform.Rotate(10.0f * Time.deltaTime * animationSpeed, 0.0f, 0.0f, Space.World);
                 }
                 else
@@ -343,10 +425,12 @@ public class Player : MonoBehaviour {
 
                     player.transform.eulerAngles = new Vector3(-48, y, z);
                     //set standing and reset to starting action
+                    halfStanding = false;
                     standing = false;
-                    getinBedAnimation = GetinBedAnimation.FaceBed;
+                    getOutBedAnimation = GetOutBedAnimation.StandUp;
 
                 }
+                   
                 break;
 
         }
@@ -358,6 +442,8 @@ public class Player : MonoBehaviour {
         //if toggling walk
         if (toggle)
         {
+
+            walking = true;
 
             Animator anim = player.GetComponent<Animator>();
 
@@ -380,6 +466,8 @@ public class Player : MonoBehaviour {
         }
         else //toggling walk off
         {
+
+            walking = false;
 
             Animator anim = player.GetComponent<Animator>();
 

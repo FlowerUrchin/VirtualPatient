@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - WayPoint
+  - Patient1
+  - Patient2
+  - Patient3
   layers:
   - Default
   - TransparentFX

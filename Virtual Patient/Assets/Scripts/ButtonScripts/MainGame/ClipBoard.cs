@@ -9,13 +9,17 @@ public class ClipBoard : MonoBehaviour
     public UnityEngine.UI.Button clipBoard;
     public GameObject Sliders;
     public GameObject Text;
+    public UnityEngine.UI.Text diagnosisText;
     public UnityEngine.UI.Text timer;
+
+    public UnityEngine.UI.Image HappinessImage;
+    public Sprite[] happyImages;
 
     //Default rect position
     private int xPos = 300;
     private int yPos = 150;
 
-    public float speed;
+    public float animationMultiplier;
 
     //animation variables
     public bool Opening = false;
@@ -24,6 +28,8 @@ public class ClipBoard : MonoBehaviour
 
     public bool Opened = false;
     public bool Closed = true;
+
+    private float animationLength = 60;
 
     // Use this for initialization
     void Start()
@@ -37,6 +43,40 @@ public class ClipBoard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(GameManager.instance.player.GetComponent<Player>().Happiness >= 60)
+        {
+            HappinessImage.sprite = happyImages[0];
+        }
+        else if(GameManager.instance.player.GetComponent<Player>().Happiness < 60 && GameManager.instance.player.GetComponent<Player>().Happiness >= 30)
+        {
+            HappinessImage.sprite = happyImages[1];
+        }
+        else
+        {
+            HappinessImage.sprite = happyImages[2];
+        }
+
+        if(GameManager.instance.lastDiagnoseTime > 0)
+        {
+
+            diagnosisText.text = "Diagnosis:\n\n";
+
+            foreach (Diagnosis diagnosis in GameManager.instance.diagnoses)
+            {
+                string value = "";
+
+                if (diagnosis.currentValue > 60)
+                    value = "good";
+                else if (diagnosis.currentValue <= 60 && diagnosis.currentValue >= 30)
+                    value = "mild";
+                else
+                    value = "bad";
+
+                diagnosisText.text += diagnosis.diagnosisName + ": " + value + "\n"; 
+            }
+
+        }
 
         if (Opening)
         {
@@ -53,7 +93,7 @@ public class ClipBoard : MonoBehaviour
 
             //If the animation has finished
             if (currentScale.x >= 8 && currentScale.y >= 6 && currentPosition.x <= 0 && currentPosition.y <= 0 &&
-                currentScaleSliders.x >= 6 && currentScaleSliders.y >= 6 && currentPositionSliders.x <= 0 && currentPositionSliders.y <= 0)
+                currentScaleSliders.x >= 3 && currentScaleSliders.y >= 6 && currentPositionSliders.x <= -220 && currentPositionSliders.y <= 0)
             {
                 Opening = false;
                 Opened = true;
@@ -62,18 +102,18 @@ public class ClipBoard : MonoBehaviour
             }
 
             //Move the position
-            currentPosition.x -= 32 * speed;
-            currentPosition.y -= 16 * speed;
+            currentPosition.x += ((0 - 300) / animationLength) * animationMultiplier;
+            currentPosition.y += ((0 - 150) / animationLength) * animationMultiplier;
             //Increase the scale
-            currentScale.x += 1f * speed;
-            currentScale.y += 0.7f * speed;
+            currentScale.x += ((8-0) / animationLength) * animationMultiplier;
+            currentScale.y += ((6-0) / animationLength) * animationMultiplier;
 
             //Move the position
-            currentPositionSliders.x -= 45 * speed;
-            currentPositionSliders.y -= 15 * speed;
+            currentPositionSliders.x += ((0 - 365 - 220) / animationLength) * animationMultiplier;
+            currentPositionSliders.y += ((0 - 145) / animationLength) * animationMultiplier;
             //Increase the scale
-            currentScaleSliders.x += 0.7f * speed;
-            currentScaleSliders.y += 0.7f * speed;
+            currentScaleSliders.x += ((3) / animationLength) * animationMultiplier;
+            currentScaleSliders.y += ((6) / animationLength) * animationMultiplier;
 
             //If the clipboard is in the center of the screen then stop the animation
             if (currentPosition.x <= 0 && currentPosition.y <= 0)
@@ -89,16 +129,16 @@ public class ClipBoard : MonoBehaviour
             }
 
             //If the clipboard is in the center of the screen then stop the animation
-            if (currentPositionSliders.x <= 0 && currentPositionSliders.y <= 0)
+            if (currentPositionSliders.x <= -220 && currentPositionSliders.y <= 0)
             {
                 //ensure whole numbers
-                currentPositionSliders = new Vector3(0, 0, 0);
+                currentPositionSliders = new Vector3(-220, 0, 0);
             }
 
             //If the clipboard is large enough
-            if (currentScaleSliders.x >= 6 && currentScaleSliders.y >= 6)
+            if (currentScaleSliders.x >= 3 && currentScaleSliders.y >= 6)
             {
-                currentScaleSliders = new Vector3(6, 6, 1);
+                currentScaleSliders = new Vector3(3, 6, 1);
             }
 
             clipBoard.GetComponent<RectTransform>().localScale = currentScale;
@@ -138,18 +178,18 @@ public class ClipBoard : MonoBehaviour
             }
 
             //Move the position
-            currentPosition.x += 35 * speed;
-            currentPosition.y += 16 * speed;
+            currentPosition.x += ((300 - 0) / animationLength) * animationMultiplier;
+            currentPosition.y += ((300 - 0) / animationLength) * animationMultiplier;
             //Increase the scale
-            currentScale.x -= 0.7f * speed;
-            currentScale.y -= 0.7f * speed;
+            currentScale.x += ((0 - 8) / animationLength) * animationMultiplier;
+            currentScale.y += ((0 - 6) / animationLength) * animationMultiplier;
 
             //Move the position
-            currentPositionSliders.x += 45 * speed;
-            currentPositionSliders.y += 15 * speed;
+            currentPositionSliders.x += ((0 + 365 + 220) / animationLength) * animationMultiplier;
+            currentPositionSliders.y += ((0 + 145) / animationLength) * animationMultiplier;
             //Increase the scale
-            currentScaleSliders.x -= 1f * speed;
-            currentScaleSliders.y -= 0.7f * speed;
+            currentScaleSliders.x += ((0 - 3) / animationLength) * animationMultiplier;
+            currentScaleSliders.y += ((0 - 6) / animationLength) * animationMultiplier;
 
             //If the clipboard is in the center of the screen then stop the animation
             if (currentPosition.x >= 300 && currentPosition.y >= 150)
@@ -194,8 +234,10 @@ public class ClipBoard : MonoBehaviour
                 timer.text = "Last Diagnosis\n" + Mathf.Floor((Time.time - GameManager.instance.lastDiagnoseTime) / 60 / 60 / 24) + " D";
             else if ((Time.time - GameManager.instance.lastDiagnoseTime) / 60 / 60 >= 1)
                 timer.text = "Last Diagnosis\n" + Mathf.Floor((Time.time - GameManager.instance.lastDiagnoseTime) / 60 / 60) + " H";
-            else
+            else if ((Time.time - GameManager.instance.lastDiagnoseTime) / 60 >= 1)
                 timer.text = "Last Diagnosis\n" + Mathf.Floor((Time.time - GameManager.instance.lastDiagnoseTime) / 60) + " M";
+            else
+                timer.text = "Last Diagnosis\nLess than";
 
             Text.SetActive(true);
             Finished = false;

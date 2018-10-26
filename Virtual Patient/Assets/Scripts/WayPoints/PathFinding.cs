@@ -101,17 +101,101 @@ public class PathFinding : MonoBehaviour
                 if (moveTimeCurrent > moveTimeTotal)
                     moveTimeCurrent = moveTimeTotal;
                 transform.position = Vector3.Lerp(currentWayPointPosition, currentPath.Peek(), moveTimeCurrent / moveTimeTotal);
+
+                //Look at
+                var lookAt = currentPath.Peek() - transform.position;
+                lookAt.y = 0;
+                if(lookAt.magnitude > Mathf.Epsilon)
+                {
+                    var lookRotation = Quaternion.LookRotation(lookAt);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5 * Time.deltaTime);
+                }
+
             }else
             {
                 currentWayPointPosition = currentPath.Pop();
                 if (currentPath.Count == 0)
-                    Stop();
+                {
+                    CheckLookDirection();
+                }
                 else
                 {
                     moveTimeCurrent = 0;
                     moveTimeTotal = (currentWayPointPosition - currentPath.Peek()).magnitude / walkSpeed;
                 }
             }
+        }
+        else
+        {
+            CheckLookDirection();
+        }
+    }
+
+    private void CheckLookDirection()
+    {
+        Vector3 lookAt = new Vector3();
+        //At the location now face the correct way
+        switch (movingTo)
+        {
+            case Player.position.Bed:
+            case Player.position.empty:
+            case Player.position.Middle:
+                Stop();
+                break;
+            case Player.position.Door:
+                lookAt = new Vector3(-700, 0, -332) - transform.position;
+                lookAt.y = 0;
+                if (Vector3.Angle(transform.forward, new Vector3(-700, 0, -332) - transform.position) > 1f)
+                {
+                    var lookRotation = Quaternion.LookRotation(lookAt);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5 * Time.deltaTime);
+                }
+                else
+                {
+                    Stop();
+                }
+                break;
+            case Player.position.DiagnoseMachine:
+            case Player.position.FoodTray:
+                
+                lookAt = new Vector3(-39, 0, -850) - transform.position;
+                lookAt.y = 0;
+                if (Vector3.Angle(transform.forward, new Vector3(-39, 0, -850) - transform.position) > 1f)
+                {
+                    var lookRotation = Quaternion.LookRotation(lookAt);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5 * Time.deltaTime);
+                }
+                else
+                {
+                    Stop();
+                }
+                break;
+            case Player.position.Sink:
+                lookAt = new Vector3(340, 0, -400) - transform.position;
+                lookAt.y = 0;
+                if (Vector3.Angle(transform.forward, new Vector3(340, 0, -400) - transform.position) > 1f)
+                {
+                    var lookRotation = Quaternion.LookRotation(lookAt);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5 * Time.deltaTime);
+                }
+                else
+                {
+                    Stop();
+                }
+                break;
+            case Player.position.Treadmill:
+                lookAt = new Vector3(285, 0, 110) - transform.position;
+                lookAt.y = 0;
+                if (Vector3.Angle(transform.forward, new Vector3(285, 0, 110) - new Vector3(transform.position.x, 0, transform.position.z)) > 1f)
+                {
+                    var lookRotation = Quaternion.LookRotation(lookAt);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, 5 * Time.deltaTime);
+                }
+                else
+                {
+                    Stop();
+                }
+                break;
         }
     }
 

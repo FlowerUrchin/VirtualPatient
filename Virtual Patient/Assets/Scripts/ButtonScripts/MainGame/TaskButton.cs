@@ -29,11 +29,15 @@ public class TaskButton : MonoBehaviour {
 
     public void CancelTask()
     {
-
+        
         Task thistask = gameManager.currentTask.Find(x => x.name == task);
         thistask.CancelTask();
         gameManager.currentTask.Remove(thistask);
         gameManager.player.GetComponent<Player>().moveTo = Player.position.empty;
+        if(gameManager.player.GetComponent<Player>().halfStanding)
+        {
+            gameManager.player.GetComponent<Player>().standing = !gameManager.player.GetComponent<Player>().standing;
+        }
 
     }
 
